@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Near.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Base58.cs" />
     <Compile Include="Utilities\BinaryReader.cs" />
     <Compile Include="Utilities\BinaryWriter.cs" />
     <Compile Include="Utilities\IConnectionInfo.cs" />
