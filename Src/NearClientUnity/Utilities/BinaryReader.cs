@@ -88,6 +88,15 @@ namespace NearClientUnity.Utilities
             return ((ulong) hi) << 32 | lo;
         }
 
+        public virtual UInt128 ReadUInt128()
+        {
+            FillBuffer(16);
+
+            var result = new UInt128(_buffer);
+
+            return result;
+        }
+
         public virtual string ReadString()
         {
             Contract.Ensures(Contract.Result<string>() != null);
