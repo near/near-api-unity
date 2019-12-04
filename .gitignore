@@ -16,3 +16,4 @@ _ReSharper.*
 *.nuget.targets
 *.orig
 .DS_Store
+Src/.idea/
