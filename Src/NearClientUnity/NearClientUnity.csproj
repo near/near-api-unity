@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Near.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ByteArray32.cs" />
     <Compile Include="Utilities\Base58.cs" />
     <Compile Include="Utilities\BinaryReader.cs" />
     <Compile Include="Utilities\BinaryWriter.cs" />
@@ -116,7 +117,12 @@
     <Compile Include="Utilities\Ed25519\Sha512.cs" />
     <Compile Include="Utilities\IConnectionInfo.cs" />
     <Compile Include="Utilities\INetwork.cs" />
+    <Compile Include="Utilities\Signature.cs" />
+    <Compile Include="Utilities\KeyPair.cs" />
+    <Compile Include="Utilities\KeyPairEd25519.cs" />
     <Compile Include="Utilities\KeyType.cs" />
+    <Compile Include="Utilities\KeyTypeConverter.cs" />
+    <Compile Include="Utilities\PublicKey.cs" />
     <Compile Include="Utilities\UInt128.cs" />
     <Compile Include="Utilities\Web.cs" />
   </ItemGroup>

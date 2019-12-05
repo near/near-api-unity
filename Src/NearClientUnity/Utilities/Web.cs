@@ -14,7 +14,7 @@ namespace NearClientUnity.Utilities
                 client.DefaultRequestHeaders.Add("Content-type", "application/json; charset=utf-8");
 
                 HttpResponseMessage response;
-                
+
                 if (!string.IsNullOrEmpty(json))
                 {
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -32,7 +32,7 @@ namespace NearClientUnity.Utilities
                 }
                 else
                 {
-                    throw new HttpException((int)response.StatusCode, response.Content.ToString());
+                    throw new HttpException((int) response.StatusCode, response.Content.ToString());
                 }
             }
         }
