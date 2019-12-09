@@ -52,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyStores\InMemoryKeyStore.cs" />
+    <Compile Include="KeyStores\KeyStore.cs" />
     <Compile Include="Near.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BlockHeader.cs" />
@@ -150,9 +152,7 @@
     <Compile Include="Utilities\UInt128.cs" />
     <Compile Include="Utilities\Web.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="KeyStores\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="DLLs\UnityEngine.dll" />
     <Content Include="DLLs\UnityEngine.dll.mdb">
