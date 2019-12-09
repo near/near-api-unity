@@ -52,8 +52,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="KeyStores\AccountInfo.cs" />
     <Compile Include="KeyStores\InMemoryKeyStore.cs" />
     <Compile Include="KeyStores\KeyStore.cs" />
+    <Compile Include="KeyStores\UnencryptedFileSystemKeyStore.cs" />
     <Compile Include="Near.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BlockHeader.cs" />
