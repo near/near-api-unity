@@ -2,8 +2,8 @@
 {
     public interface INetwork
     {
-        string Name { get; }
-        string ChainId { get; }
+        string Name { get; set; }
+        string ChainId { get; set; }
         dynamic DefaultProvider(dynamic providers);
     }
 }

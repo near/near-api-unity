@@ -12,7 +12,7 @@ namespace NearClientUnity.Utilities
         public static string Encode(byte[] data)
         {
             Contract.Requires<ArgumentNullException>(data != null);
-            
+
             var intData = data.Aggregate<byte, BigInteger>(0, (current, t) => current * 256 + t);
             var result = string.Empty;
 
@@ -34,7 +34,7 @@ namespace NearClientUnity.Utilities
         public static byte[] Decode(string data)
         {
             Contract.Requires<ArgumentNullException>(data != null);
-            
+
             BigInteger intData = 0;
 
             for (var i = 0; i < data.Length; i++)

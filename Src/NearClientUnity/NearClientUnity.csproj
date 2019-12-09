@@ -33,6 +33,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -51,6 +54,27 @@
   <ItemGroup>
     <Compile Include="Near.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\BlockHeader.cs" />
+    <Compile Include="Providers\BlockResult.cs" />
+    <Compile Include="Providers\ChunkHeader.cs" />
+    <Compile Include="Providers\ChunkResult.cs" />
+    <Compile Include="Providers\ExecutionError.cs" />
+    <Compile Include="Providers\ExecutionOutcome.cs" />
+    <Compile Include="Providers\ExecutionOutcomeWithId.cs" />
+    <Compile Include="Providers\ExecutionStatus.cs" />
+    <Compile Include="Providers\ExecutionStatusBasic.cs" />
+    <Compile Include="Providers\FinalExecutionOutcome.cs" />
+    <Compile Include="Providers\FinalExecutionStatus.cs" />
+    <Compile Include="Providers\FinalExecutionStatusBasic.cs" />
+    <Compile Include="Providers\JsonRpcProvider.cs" />
+    <Compile Include="Providers\NodeStatusResult.cs" />
+    <Compile Include="Providers\Provider.cs" />
+    <Compile Include="Providers\SyncInfo.cs" />
+    <Compile Include="Providers\TotalWeight.cs" />
+    <Compile Include="Providers\Transaction.cs" />
+    <Compile Include="Signature.cs" />
+    <Compile Include="SignedTransaction.cs" />
+    <Compile Include="Transaction.cs" />
     <Compile Include="Utilities\ByteArray32.cs" />
     <Compile Include="Utilities\Base58.cs" />
     <Compile Include="Utilities\BinaryReader.cs" />
@@ -128,7 +152,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="KeyStores\" />
-    <Folder Include="Providers\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="DLLs\UnityEngine.dll" />
@@ -136,6 +159,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="DLLs\UnityEngine.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

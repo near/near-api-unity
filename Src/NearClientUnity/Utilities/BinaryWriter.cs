@@ -102,23 +102,23 @@ namespace NearClientUnity.Utilities
 
         public virtual void Write(uint value)
         {
-            _buffer[0] = (byte)value;
-            _buffer[1] = (byte)(value >> 8);
-            _buffer[2] = (byte)(value >> 16);
-            _buffer[3] = (byte)(value >> 24);
+            _buffer[0] = (byte) value;
+            _buffer[1] = (byte) (value >> 8);
+            _buffer[2] = (byte) (value >> 16);
+            _buffer[3] = (byte) (value >> 24);
             OutStream.Write(_buffer, 0, 4);
         }
 
         public virtual void Write(ulong value)
         {
-            _buffer[0] = (byte)value;
-            _buffer[1] = (byte)(value >> 8);
-            _buffer[2] = (byte)(value >> 16);
-            _buffer[3] = (byte)(value >> 24);
-            _buffer[4] = (byte)(value >> 32);
-            _buffer[5] = (byte)(value >> 40);
-            _buffer[6] = (byte)(value >> 48);
-            _buffer[7] = (byte)(value >> 56);
+            _buffer[0] = (byte) value;
+            _buffer[1] = (byte) (value >> 8);
+            _buffer[2] = (byte) (value >> 16);
+            _buffer[3] = (byte) (value >> 24);
+            _buffer[4] = (byte) (value >> 32);
+            _buffer[5] = (byte) (value >> 40);
+            _buffer[6] = (byte) (value >> 48);
+            _buffer[7] = (byte) (value >> 56);
 
             OutStream.Write(_buffer, 0, 8);
         }
@@ -126,7 +126,7 @@ namespace NearClientUnity.Utilities
         public virtual void Write(UInt128 value)
         {
             _buffer = value.GetBytes();
-            OutStream.Write(_buffer,0, 16);
+            OutStream.Write(_buffer, 0, 16);
         }
 
         [System.Security.SecuritySafeCritical]
@@ -137,7 +137,7 @@ namespace NearClientUnity.Utilities
             Contract.EndContractBlock();
 
             int len = _encoding.GetByteCount(value);
-            Write((uint)len);
+            Write((uint) len);
 
             if (_largeByteBuffer == null)
             {
@@ -152,7 +152,7 @@ namespace NearClientUnity.Utilities
                 OutStream.Write(_largeByteBuffer, 0, len);
             }
             else
-            {   
+            {
                 int charStart = 0;
                 int numLeft = value.Length;
 
@@ -172,18 +172,18 @@ namespace NearClientUnity.Utilities
                         {
                             fixed (byte* pBytes = _largeByteBuffer)
                             {
-                                byteLen = _encoder.GetBytes(pChars + charStart, charCount, pBytes, _largeByteBuffer.Length, charCount == numLeft);
+                                byteLen = _encoder.GetBytes(pChars + charStart, charCount, pBytes,
+                                    _largeByteBuffer.Length, charCount == numLeft);
                             }
                         }
                     }
 
                     OutStream.Write(_largeByteBuffer, 0, byteLen);
-                    
+
                     charStart += charCount;
                     numLeft -= charCount;
                 }
             }
         }
-
     }
 }

@@ -17,3 +17,11 @@ _ReSharper.*
 *.orig
 .DS_Store
 Src/.idea/
+*.nupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+#!**/[Pp]ackages/repositories.config
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.assets.json

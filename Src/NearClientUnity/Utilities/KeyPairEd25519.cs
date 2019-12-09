@@ -2,7 +2,7 @@
 
 namespace NearClientUnity.Utilities
 {
-    public class KeyPairEd25519: KeyPair
+    public class KeyPairEd25519 : KeyPair
     {
         private readonly PublicKey _publicKey;
         private readonly string _secretKey;
@@ -25,6 +25,7 @@ namespace NearClientUnity.Utilities
             {
                 rng.GetBytes(randomSecretKey);
             }
+
             return new KeyPairEd25519(Base58.Encode(randomSecretKey));
         }
 

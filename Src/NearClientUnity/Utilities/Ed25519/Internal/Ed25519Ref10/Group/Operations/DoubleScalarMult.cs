@@ -1,4 +1,5 @@
 ﻿using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Lookup;
+
 namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operations
 {
     internal static partial class GroupOperations

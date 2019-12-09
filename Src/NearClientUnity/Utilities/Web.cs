@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Newtonsoft.Json.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -7,7 +8,7 @@ namespace NearClientUnity.Utilities
 {
     public static class Web
     {
-        public static async Task<string> FetchJsonAsync(string url, string json = "")
+        public static async Task<dynamic> FetchJsonAsync(string url, string json = "")
         {
             using (var client = new HttpClient())
             {
@@ -28,7 +29,8 @@ namespace NearClientUnity.Utilities
                 if (response.IsSuccessStatusCode)
                 {
                     var jsonString = await response.Content.ReadAsStringAsync();
-                    return jsonString;
+                    dynamic result = JObject.Parse(jsonString);
+                    return result;
                 }
                 else
                 {

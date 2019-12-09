@@ -23,8 +23,9 @@ namespace NearClientUnity.Utilities
                 case 1:
                 {
                     var decodeData = Base58.Decode(parts[0]);
-                    if (decodeData.Length != ByteArray32.BufferLength) throw new ArgumentException("Invalid encoded key");
-                    var byteArray32 = new ByteArray32 { Buffer = decodeData };
+                    if (decodeData.Length != ByteArray32.BufferLength)
+                        throw new ArgumentException("Invalid encoded key");
+                    var byteArray32 = new ByteArray32 {Buffer = decodeData};
                     _keyType = KeyType.Ed25519;
                     _data = byteArray32;
                     break;
@@ -39,7 +40,7 @@ namespace NearClientUnity.Utilities
                     break;
                 }
                 default:
-                    throw  new NotSupportedException("Invalid encoded key format, must be '<curve>:<encoded key>'");
+                    throw new NotSupportedException("Invalid encoded key format, must be '<curve>:<encoded key>'");
             }
         }
     }
