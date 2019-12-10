@@ -52,6 +52,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="InMemorySigner.cs" />
     <Compile Include="KeyStores\AccountInfo.cs" />
     <Compile Include="KeyStores\InMemoryKeyStore.cs" />
     <Compile Include="KeyStores\KeyStore.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Providers\Transaction.cs" />
     <Compile Include="Signature.cs" />
     <Compile Include="SignedTransaction.cs" />
+    <Compile Include="Signer.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="Utilities\ByteArray32.cs" />
     <Compile Include="Utilities\Base58.cs" />
