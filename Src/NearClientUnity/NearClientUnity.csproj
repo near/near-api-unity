@@ -52,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Connection.cs" />
+    <Compile Include="ConnectionConfig.cs" />
     <Compile Include="InMemorySigner.cs" />
     <Compile Include="KeyStores\AccountInfo.cs" />
     <Compile Include="KeyStores\InMemoryKeyStore.cs" />
@@ -77,9 +79,12 @@
     <Compile Include="Providers\SyncInfo.cs" />
     <Compile Include="Providers\TotalWeight.cs" />
     <Compile Include="Providers\Transaction.cs" />
+    <Compile Include="ProviderType.cs" />
     <Compile Include="Signature.cs" />
     <Compile Include="SignedTransaction.cs" />
     <Compile Include="Signer.cs" />
+    <Compile Include="SignerConfig.cs" />
+    <Compile Include="SignerType.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="Utilities\ByteArray32.cs" />
     <Compile Include="Utilities\Base58.cs" />
@@ -147,6 +152,7 @@
     <Compile Include="Utilities\Ed25519\Sha512.cs" />
     <Compile Include="Utilities\IConnectionInfo.cs" />
     <Compile Include="Utilities\INetwork.cs" />
+    <Compile Include="ProviderConfig.cs" />
     <Compile Include="Utilities\Signature.cs" />
     <Compile Include="Utilities\KeyPair.cs" />
     <Compile Include="Utilities\KeyPairEd25519.cs" />

@@ -10,7 +10,7 @@ namespace NearClientUnity
         public KeyType KeyType => _keyType;
         public byte[] Data => _data;
 
-        Signature(byte[] signature)
+        public Signature(byte[] signature)
         {
             _keyType = KeyType.Ed25519;
             _data = signature;
