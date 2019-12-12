@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using NearClientUnity.KeyStores;
 using NearClientUnity.Providers;
 

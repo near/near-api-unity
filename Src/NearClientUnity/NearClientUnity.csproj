@@ -52,8 +52,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessKey.cs" />
+    <Compile Include="AccessKeyPermission.cs" />
+    <Compile Include="AccountState.cs" />
+    <Compile Include="Action.cs" />
+    <Compile Include="ActionType.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionConfig.cs" />
+    <Compile Include="FullAccessPermission.cs" />
+    <Compile Include="FunctionCallPermission.cs" />
     <Compile Include="InMemorySigner.cs" />
     <Compile Include="KeyStores\AccountInfo.cs" />
     <Compile Include="KeyStores\InMemoryKeyStore.cs" />
@@ -80,7 +87,7 @@
     <Compile Include="Providers\TotalWeight.cs" />
     <Compile Include="Providers\Transaction.cs" />
     <Compile Include="ProviderType.cs" />
-    <Compile Include="Signature.cs" />
+    <Compile Include="NearSignature.cs" />
     <Compile Include="SignedTransaction.cs" />
     <Compile Include="Signer.cs" />
     <Compile Include="SignerConfig.cs" />

@@ -13,7 +13,7 @@ namespace NearClientUnity.Providers
 
         private IConnectionInfo _connection;
 
-        JsonRpcProvider(string url)
+        public JsonRpcProvider(string url)
         {
             IConnectionInfo connectionInfo = null;
             connectionInfo.Url = url;
