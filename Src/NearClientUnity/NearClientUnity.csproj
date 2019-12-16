@@ -55,6 +55,7 @@
     <Compile Include="AccessKey.cs" />
     <Compile Include="AccessKeyPermission.cs" />
     <Compile Include="Account.cs" />
+    <Compile Include="AccountCreator.cs" />
     <Compile Include="AccountState.cs" />
     <Compile Include="Action.cs" />
     <Compile Include="ActionType.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="KeyStores\InMemoryKeyStore.cs" />
     <Compile Include="KeyStores\KeyStore.cs" />
     <Compile Include="KeyStores\UnencryptedFileSystemKeyStore.cs" />
+    <Compile Include="LocalAccountCreator.cs" />
     <Compile Include="Near.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BlockHeader.cs" />
@@ -94,6 +96,7 @@
     <Compile Include="SignerConfig.cs" />
     <Compile Include="SignerType.cs" />
     <Compile Include="Transaction.cs" />
+    <Compile Include="UrlAccountCreator.cs" />
     <Compile Include="Utilities\ByteArray32.cs" />
     <Compile Include="Utilities\Base58.cs" />
     <Compile Include="Utilities\BinaryReader.cs" />
@@ -158,7 +161,7 @@
     <Compile Include="Utilities\Ed25519\Internal\Ed25519Ref10\Lookup\Sqrtm1.cs" />
     <Compile Include="Utilities\Ed25519\Internal\Sha512Internal.cs" />
     <Compile Include="Utilities\Ed25519\Sha512.cs" />
-    <Compile Include="Utilities\IConnectionInfo.cs" />
+    <Compile Include="Utilities\ConnectionInfo.cs" />
     <Compile Include="Utilities\INetwork.cs" />
     <Compile Include="ProviderConfig.cs" />
     <Compile Include="Utilities\Signature.cs" />

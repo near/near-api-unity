@@ -11,12 +11,14 @@ namespace NearClientUnity.Providers
     {
         private int _id { get; set; } = 123;
 
-        private IConnectionInfo _connection;
+        private ConnectionInfo _connection;
 
         public JsonRpcProvider(string url)
         {
-            IConnectionInfo connectionInfo = null;
-            connectionInfo.Url = url;
+            var connectionInfo = new ConnectionInfo
+            {
+                Url = url
+            };
             _connection = connectionInfo;
         }
         public override INetwork GetNetwork()

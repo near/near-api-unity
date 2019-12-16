@@ -39,7 +39,7 @@ namespace NearClientUnity.Utilities
             }
         }
 
-        public static async Task<string> FetchJsonAsync(IConnectionInfo connection, string json = "")
+        public static async Task<string> FetchJsonAsync(ConnectionInfo connection, string json = "")
         {
             var url = connection.Url;
             var result = await FetchJsonAsync(url, json);
