@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="AccessKey.cs" />
     <Compile Include="AccessKeyPermission.cs" />
+    <Compile Include="Account.cs" />
     <Compile Include="AccountState.cs" />
     <Compile Include="Action.cs" />
     <Compile Include="ActionType.cs" />

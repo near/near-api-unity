@@ -16,7 +16,7 @@ namespace NearClientUnity
             return result;
         }
 
-        public static async Task<Tuple<byte[], SignedTransaction>> SignTransaction(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId, string networkId)
+        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId, string networkId)
         {
             var publicKey = await signer.GetPublicKeyAsync(accountId, networkId);
             var transaction = new Transaction
@@ -48,7 +48,7 @@ namespace NearClientUnity
             return result;
         }
 
-        public static async Task<Tuple<byte[], SignedTransaction>> SignTransaction(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId)
+        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId)
         {
             var publicKey = await signer.GetPublicKeyAsync(accountId);
             var transaction = new Transaction
@@ -80,7 +80,7 @@ namespace NearClientUnity
             return result;
         }
 
-        public static async Task<Tuple<byte[], SignedTransaction>> SignTransaction(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer)
+        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer)
         {
             var publicKey = await signer.GetPublicKeyAsync();
             var transaction = new Transaction
