@@ -61,6 +61,8 @@
     <Compile Include="ActionType.cs" />
     <Compile Include="Connection.cs" />
     <Compile Include="ConnectionConfig.cs" />
+    <Compile Include="ContractNear.cs" />
+    <Compile Include="ContractOptions.cs" />
     <Compile Include="FullAccessPermission.cs" />
     <Compile Include="FunctionCallPermission.cs" />
     <Compile Include="InMemorySigner.cs" />

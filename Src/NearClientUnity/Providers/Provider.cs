@@ -1,5 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using NearClientUnity.Utilities;
+using Newtonsoft.Json.Linq;
 
 namespace NearClientUnity.Providers
 {
@@ -14,5 +16,22 @@ namespace NearClientUnity.Providers
         public abstract Task<BlockResult> GetBlockAsync(int blockId);
         public abstract Task<ChunkResult> GetChunkAsync(string chunkId);
         public abstract Task<ChunkResult> GetChunkAsync(int[,] chunkId);
+
+        public static dynamic GetTransactionLastResult(FinalExecutionOutcome txResult)
+        {
+            if (txResult.Status == null || txResult.Status.GetType() != typeof(object) || string.Equals(
+                    txResult.Status.SuccessValue, null, StringComparison.Ordinal)) return null;
+            var value = Convert.FromBase64String(txResult.Status.SuccessValue).ToString();
+
+            try
+            {
+                var result = JObject.Parse(value);
+                return result;
+            }
+            catch (Exception)
+            {
+                return value;
+            }
+        }
     }
 }
