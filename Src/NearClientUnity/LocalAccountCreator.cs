@@ -14,7 +14,7 @@ namespace NearClientUnity
             _initialBalance = initialBalance;
         }
 
-        public override async Task createAccount(string newAccountId, PublicKey publicKey)
+        public override async Task CreateAccountAsync(string newAccountId, PublicKey publicKey)
         {
             await _masterAccount.CreateAccountAsync(newAccountId, publicKey, _initialBalance);
         }

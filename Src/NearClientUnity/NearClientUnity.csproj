@@ -73,6 +73,7 @@
     <Compile Include="KeyStores\UnencryptedFileSystemKeyStore.cs" />
     <Compile Include="LocalAccountCreator.cs" />
     <Compile Include="Near.cs" />
+    <Compile Include="NearConfig.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Providers\BlockHeader.cs" />
     <Compile Include="Providers\BlockResult.cs" />

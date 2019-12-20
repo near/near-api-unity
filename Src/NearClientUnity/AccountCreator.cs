@@ -5,6 +5,6 @@ namespace NearClientUnity
 {
     public abstract class AccountCreator
     {
-        public abstract Task createAccount(string newAccountId, PublicKey publicKey);
+        public abstract Task CreateAccountAsync(string newAccountId, PublicKey publicKey);
     }
 }
