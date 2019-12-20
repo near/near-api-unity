@@ -69,6 +69,7 @@
     <Compile Include="KeyStores\AccountInfo.cs" />
     <Compile Include="KeyStores\InMemoryKeyStore.cs" />
     <Compile Include="KeyStores\KeyStore.cs" />
+    <Compile Include="KeyStores\MergeKeyStore.cs" />
     <Compile Include="KeyStores\UnencryptedFileSystemKeyStore.cs" />
     <Compile Include="LocalAccountCreator.cs" />
     <Compile Include="Near.cs" />
