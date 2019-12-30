@@ -5,6 +5,7 @@
         /*
 		r = p
 		*/
+
         private static void P3ConvertToP2(out GroupElementP2 r, ref GroupElementP3 p)
         {
             r.X = p.X;

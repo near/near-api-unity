@@ -1,6 +1,6 @@
-﻿using System;
-using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operations;
+﻿using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operations;
 using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.ScalarOps;
+using System;
 
 namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Ed25519Ops
 {

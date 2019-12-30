@@ -1,16 +1,14 @@
-﻿using System;
+﻿using NearClientUnity.Utilities;
+using Newtonsoft.Json;
+using System;
 using System.Dynamic;
 using System.Threading.Tasks;
 using System.Web;
-using NearClientUnity.Utilities;
-using Newtonsoft.Json;
 
 namespace NearClientUnity.Providers
 {
     public class JsonRpcProvider : Provider
     {
-        private int _id { get; set; } = 123;
-
         private ConnectionInfo _connection;
 
         public JsonRpcProvider(string url)
@@ -21,6 +19,30 @@ namespace NearClientUnity.Providers
             };
             _connection = connectionInfo;
         }
+
+        private int _id { get; set; } = 123;
+
+        public override async Task<BlockResult> GetBlockAsync(int blockId)
+        {
+            var parameters = new dynamic[1];
+            parameters[0] = blockId;
+            var result = await SendJsonRpc("block", parameters);
+            return result;
+        }
+
+        public override async Task<ChunkResult> GetChunkAsync(string chunkId)
+        {
+            var parameters = new dynamic[1];
+            parameters[0] = chunkId;
+            var result = await SendJsonRpc("chunk", parameters);
+            return result;
+        }
+
+        public override Task<ChunkResult> GetChunkAsync(int[,] chunkId)
+        {
+            throw new NotImplementedException();
+        }
+
         public override INetwork GetNetwork()
         {
             INetwork result = null;
@@ -34,15 +56,6 @@ namespace NearClientUnity.Providers
         public override async Task<NodeStatusResult> GetStatusAsync()
         {
             var result = await SendJsonRpc("status", new dynamic[0]);
-            return result;
-        }
-
-        public override async Task<FinalExecutionOutcome> SendTransactionAsync(SignedTransaction signedTransaction)
-        {
-            var bytes = signedTransaction.Encode();
-            var parameters = new dynamic[1];
-            parameters[0] = Convert.ToBase64String(bytes, 0, bytes.Length);
-            var result = await SendJsonRpc("broadcast_tx_commit", parameters);
             return result;
         }
 
@@ -72,31 +85,19 @@ namespace NearClientUnity.Providers
             }
         }
 
-        public override async Task<BlockResult> GetBlockAsync(int blockId)
+        public override async Task<FinalExecutionOutcome> SendTransactionAsync(SignedTransaction signedTransaction)
         {
+            var bytes = signedTransaction.Encode();
             var parameters = new dynamic[1];
-            parameters[0] = blockId;
-            var result = await SendJsonRpc("block", parameters);
+            parameters[0] = Convert.ToBase64String(bytes, 0, bytes.Length);
+            var result = await SendJsonRpc("broadcast_tx_commit", parameters);
             return result;
-        }
-
-        public override async Task<ChunkResult> GetChunkAsync(string chunkId)
-        {
-            var parameters = new dynamic[1];
-            parameters[0] = chunkId;
-            var result = await SendJsonRpc("chunk", parameters);
-            return result;
-        }
-
-        public override Task<ChunkResult> GetChunkAsync(int[,] chunkId)
-        {
-            throw new NotImplementedException();
         }
 
         private async Task<dynamic> SendJsonRpc(string method, dynamic[] parameters)
         {
             dynamic request = new ExpandoObject();
-            
+
             request.method = method;
             request.parameters = parameters;
             request.id = _id++;
@@ -113,7 +114,6 @@ namespace NearClientUnity.Providers
             {
                 throw new Exception($"{e.ErrorCode}: {e.Message}");
             }
-            
         }
     }
 }

@@ -2,7 +2,7 @@
 {
     internal static partial class FieldOperations
     {
-        //	Ignores top bit of h.
+        // Ignores top bit of h.
         internal static void FromBytes(out FieldElement h, byte[] data, int offset)
         {
             var h0 = Load_4(data, offset);
@@ -48,16 +48,16 @@
             h9 += carry8;
             h8 -= carry8 << 26;
 
-            h.X0 = (int) h0;
-            h.X1 = (int) h1;
-            h.X2 = (int) h2;
-            h.X3 = (int) h3;
-            h.X4 = (int) h4;
-            h.X5 = (int) h5;
-            h.X6 = (int) h6;
-            h.X7 = (int) h7;
-            h.X8 = (int) h8;
-            h.X9 = (int) h9;
+            h.X0 = (int)h0;
+            h.X1 = (int)h1;
+            h.X2 = (int)h2;
+            h.X3 = (int)h3;
+            h.X4 = (int)h4;
+            h.X5 = (int)h5;
+            h.X6 = (int)h6;
+            h.X7 = (int)h7;
+            h.X8 = (int)h8;
+            h.X9 = (int)h9;
         }
     }
 }

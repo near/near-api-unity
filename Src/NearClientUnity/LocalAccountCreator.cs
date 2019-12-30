@@ -1,12 +1,12 @@
-﻿using System.Threading.Tasks;
-using NearClientUnity.Utilities;
+﻿using NearClientUnity.Utilities;
+using System.Threading.Tasks;
 
 namespace NearClientUnity
 {
     public class LocalAccountCreator : AccountCreator
     {
-        private readonly Account _masterAccount;
         private readonly UInt128 _initialBalance;
+        private readonly Account _masterAccount;
 
         public LocalAccountCreator(Account masterAccount, UInt128 initialBalance)
         {

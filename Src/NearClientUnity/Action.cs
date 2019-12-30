@@ -1,15 +1,12 @@
-﻿using System.Dynamic;
-using NearClientUnity.Utilities;
+﻿using NearClientUnity.Utilities;
+using System.Dynamic;
 
 namespace NearClientUnity
 {
     public class Action
     {
-        private ActionType _type;
         private dynamic _args;
-
-        public ActionType Type => _type;
-        public dynamic Args => _args;
+        private ActionType _type;
 
         public Action(ActionType type, dynamic args)
         {
@@ -17,9 +14,34 @@ namespace NearClientUnity
             _args = args;
         }
 
+        public dynamic Args => _args;
+        public ActionType Type => _type;
+
+        public static Action AddKey(PublicKey publicKey, AccessKey accessKey)
+        {
+            dynamic args = new ExpandoObject();
+            args.PublicKey = publicKey;
+            args.AccessKey = accessKey;
+            return new Action(ActionType.AddKey, args);
+        }
+
         public static Action CreateAccount()
         {
             return new Action(ActionType.CreateAccount, null);
+        }
+
+        public static Action DeleteAccount(string beneficiaryId)
+        {
+            dynamic args = new ExpandoObject();
+            args.BeneficiaryId = beneficiaryId;
+            return new Action(ActionType.DeleteAccount, args);
+        }
+
+        public static Action DeleteKey(PublicKey publicKey)
+        {
+            dynamic args = new ExpandoObject();
+            args.PublicKey = publicKey;
+            return new Action(ActionType.DeleteKey, args);
         }
 
         public static Action DeployContract(byte[] code)
@@ -39,13 +61,6 @@ namespace NearClientUnity
             return new Action(ActionType.FunctionCall, args);
         }
 
-        public static Action Transfer(UInt128 deposit)
-        {
-            dynamic args = new ExpandoObject();
-            args.Deposit = deposit;
-            return new Action(ActionType.Transfer, args);
-        }
-
         public static Action Stake(UInt128 stake, PublicKey publicKey)
         {
             dynamic args = new ExpandoObject();
@@ -54,26 +69,11 @@ namespace NearClientUnity
             return new Action(ActionType.Stake, args);
         }
 
-        public static Action AddKey(PublicKey publicKey, AccessKey accessKey)
+        public static Action Transfer(UInt128 deposit)
         {
             dynamic args = new ExpandoObject();
-            args.PublicKey = publicKey;
-            args.AccessKey = accessKey;
-            return new Action(ActionType.AddKey, args);
-        }
-
-        public static Action DeleteKey(PublicKey publicKey)
-        {
-            dynamic args = new ExpandoObject();
-            args.PublicKey = publicKey;
-            return new Action(ActionType.DeleteKey, args);
-        }
-
-        public static Action DeleteAccount(string beneficiaryId)
-        {
-            dynamic args = new ExpandoObject();
-            args.BeneficiaryId = beneficiaryId;
-            return new Action(ActionType.DeleteAccount, args);
+            args.Deposit = deposit;
+            return new Action(ActionType.Transfer, args);
         }
     }
 }

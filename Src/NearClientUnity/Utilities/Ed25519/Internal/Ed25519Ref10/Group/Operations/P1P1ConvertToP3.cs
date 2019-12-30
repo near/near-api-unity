@@ -7,6 +7,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
         /*
 		r = p
 		*/
+
         private static void P1P1ConvertToP3(out GroupElementP3 r, ref GroupElementP1P1 p)
         {
             FieldOperations.Multiplication(out r.X, ref p.X, ref p.T);

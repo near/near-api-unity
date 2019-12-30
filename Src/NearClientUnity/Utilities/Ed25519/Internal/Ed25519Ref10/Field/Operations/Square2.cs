@@ -16,6 +16,7 @@
         /*
 		    See Multiplication.c for discussion of implementation strategy.
 		*/
+
         internal static void Square2(out FieldElement h, ref FieldElement f)
         {
             var f0 = f.X0;
@@ -43,61 +44,61 @@
             var f8_19 = 19 * f8; /* 1.959375*2^30 */
             var f9_38 = 38 * f9; /* 1.959375*2^30 */
 
-            var f0f0 = f0 * (long) f0;
-            var f0f1_2 = f0_2 * (long) f1;
-            var f0f2_2 = f0_2 * (long) f2;
-            var f0f3_2 = f0_2 * (long) f3;
-            var f0f4_2 = f0_2 * (long) f4;
-            var f0f5_2 = f0_2 * (long) f5;
-            var f0f6_2 = f0_2 * (long) f6;
-            var f0f7_2 = f0_2 * (long) f7;
-            var f0f8_2 = f0_2 * (long) f8;
-            var f0f9_2 = f0_2 * (long) f9;
-            var f1f1_2 = f1_2 * (long) f1;
-            var f1f2_2 = f1_2 * (long) f2;
-            var f1f3_4 = f1_2 * (long) f3_2;
-            var f1f4_2 = f1_2 * (long) f4;
-            var f1f5_4 = f1_2 * (long) f5_2;
-            var f1f6_2 = f1_2 * (long) f6;
-            var f1f7_4 = f1_2 * (long) f7_2;
-            var f1f8_2 = f1_2 * (long) f8;
-            var f1f9_76 = f1_2 * (long) f9_38;
-            var f2f2 = f2 * (long) f2;
-            var f2f3_2 = f2_2 * (long) f3;
-            var f2f4_2 = f2_2 * (long) f4;
-            var f2f5_2 = f2_2 * (long) f5;
-            var f2f6_2 = f2_2 * (long) f6;
-            var f2f7_2 = f2_2 * (long) f7;
-            var f2f8_38 = f2_2 * (long) f8_19;
-            var f2f9_38 = f2 * (long) f9_38;
-            var f3f3_2 = f3_2 * (long) f3;
-            var f3f4_2 = f3_2 * (long) f4;
-            var f3f5_4 = f3_2 * (long) f5_2;
-            var f3f6_2 = f3_2 * (long) f6;
-            var f3f7_76 = f3_2 * (long) f7_38;
-            var f3f8_38 = f3_2 * (long) f8_19;
-            var f3f9_76 = f3_2 * (long) f9_38;
-            var f4f4 = f4 * (long) f4;
-            var f4f5_2 = f4_2 * (long) f5;
-            var f4f6_38 = f4_2 * (long) f6_19;
-            var f4f7_38 = f4 * (long) f7_38;
-            var f4f8_38 = f4_2 * (long) f8_19;
-            var f4f9_38 = f4 * (long) f9_38;
-            var f5f5_38 = f5 * (long) f5_38;
-            var f5f6_38 = f5_2 * (long) f6_19;
-            var f5f7_76 = f5_2 * (long) f7_38;
-            var f5f8_38 = f5_2 * (long) f8_19;
-            var f5f9_76 = f5_2 * (long) f9_38;
-            var f6f6_19 = f6 * (long) f6_19;
-            var f6f7_38 = f6 * (long) f7_38;
-            var f6f8_38 = f6_2 * (long) f8_19;
-            var f6f9_38 = f6 * (long) f9_38;
-            var f7f7_38 = f7 * (long) f7_38;
-            var f7f8_38 = f7_2 * (long) f8_19;
-            var f7f9_76 = f7_2 * (long) f9_38;
-            var f8f8_19 = f8 * (long) f8_19;
-            var f8f9_38 = f8 * (long) f9_38;
-            var f9f9_38 = f9 * (long) f9_38;
+            var f0f0 = f0 * (long)f0;
+            var f0f1_2 = f0_2 * (long)f1;
+            var f0f2_2 = f0_2 * (long)f2;
+            var f0f3_2 = f0_2 * (long)f3;
+            var f0f4_2 = f0_2 * (long)f4;
+            var f0f5_2 = f0_2 * (long)f5;
+            var f0f6_2 = f0_2 * (long)f6;
+            var f0f7_2 = f0_2 * (long)f7;
+            var f0f8_2 = f0_2 * (long)f8;
+            var f0f9_2 = f0_2 * (long)f9;
+            var f1f1_2 = f1_2 * (long)f1;
+            var f1f2_2 = f1_2 * (long)f2;
+            var f1f3_4 = f1_2 * (long)f3_2;
+            var f1f4_2 = f1_2 * (long)f4;
+            var f1f5_4 = f1_2 * (long)f5_2;
+            var f1f6_2 = f1_2 * (long)f6;
+            var f1f7_4 = f1_2 * (long)f7_2;
+            var f1f8_2 = f1_2 * (long)f8;
+            var f1f9_76 = f1_2 * (long)f9_38;
+            var f2f2 = f2 * (long)f2;
+            var f2f3_2 = f2_2 * (long)f3;
+            var f2f4_2 = f2_2 * (long)f4;
+            var f2f5_2 = f2_2 * (long)f5;
+            var f2f6_2 = f2_2 * (long)f6;
+            var f2f7_2 = f2_2 * (long)f7;
+            var f2f8_38 = f2_2 * (long)f8_19;
+            var f2f9_38 = f2 * (long)f9_38;
+            var f3f3_2 = f3_2 * (long)f3;
+            var f3f4_2 = f3_2 * (long)f4;
+            var f3f5_4 = f3_2 * (long)f5_2;
+            var f3f6_2 = f3_2 * (long)f6;
+            var f3f7_76 = f3_2 * (long)f7_38;
+            var f3f8_38 = f3_2 * (long)f8_19;
+            var f3f9_76 = f3_2 * (long)f9_38;
+            var f4f4 = f4 * (long)f4;
+            var f4f5_2 = f4_2 * (long)f5;
+            var f4f6_38 = f4_2 * (long)f6_19;
+            var f4f7_38 = f4 * (long)f7_38;
+            var f4f8_38 = f4_2 * (long)f8_19;
+            var f4f9_38 = f4 * (long)f9_38;
+            var f5f5_38 = f5 * (long)f5_38;
+            var f5f6_38 = f5_2 * (long)f6_19;
+            var f5f7_76 = f5_2 * (long)f7_38;
+            var f5f8_38 = f5_2 * (long)f8_19;
+            var f5f9_76 = f5_2 * (long)f9_38;
+            var f6f6_19 = f6 * (long)f6_19;
+            var f6f7_38 = f6 * (long)f7_38;
+            var f6f8_38 = f6_2 * (long)f8_19;
+            var f6f9_38 = f6 * (long)f9_38;
+            var f7f7_38 = f7 * (long)f7_38;
+            var f7f8_38 = f7_2 * (long)f8_19;
+            var f7f9_76 = f7_2 * (long)f9_38;
+            var f8f8_19 = f8 * (long)f8_19;
+            var f8f9_38 = f8 * (long)f9_38;
+            var f9f9_38 = f9 * (long)f9_38;
 
             var h0 = f0f0 + f1f9_76 + f2f8_38 + f3f7_76 + f4f6_38 + f5f5_38;
             var h1 = f0f1_2 + f2f9_38 + f3f8_38 + f4f7_38 + f5f6_38;
@@ -161,16 +162,16 @@
             h1 += carry0;
             h0 -= carry0 << 26;
 
-            h.X0 = (int) h0;
-            h.X1 = (int) h1;
-            h.X2 = (int) h2;
-            h.X3 = (int) h3;
-            h.X4 = (int) h4;
-            h.X5 = (int) h5;
-            h.X6 = (int) h6;
-            h.X7 = (int) h7;
-            h.X8 = (int) h8;
-            h.X9 = (int) h9;
+            h.X0 = (int)h0;
+            h.X1 = (int)h1;
+            h.X2 = (int)h2;
+            h.X3 = (int)h3;
+            h.X4 = (int)h4;
+            h.X5 = (int)h5;
+            h.X6 = (int)h6;
+            h.X7 = (int)h7;
+            h.X8 = (int)h8;
+            h.X9 = (int)h9;
         }
     }
 }

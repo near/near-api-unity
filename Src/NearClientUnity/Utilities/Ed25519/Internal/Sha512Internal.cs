@@ -26,18 +26,6 @@
             0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
         };
 
-        internal static void Sha512Init(out Array8<ulong> state)
-        {
-            state.X0 = 0x6a09e667f3bcc908;
-            state.X1 = 0xbb67ae8584caa73b;
-            state.X2 = 0x3c6ef372fe94f82b;
-            state.X3 = 0xa54ff53a5f1d36f1;
-            state.X4 = 0x510e527fade682d1;
-            state.X5 = 0x9b05688c2b3e6c1f;
-            state.X6 = 0x1f83d9abfb41bd6b;
-            state.X7 = 0x5be0cd19137e2179;
-        }
-
         internal static void Core(out Array8<ulong> outputState, ref Array8<ulong> inputState, ref Array16<ulong> input)
         {
             unchecked
@@ -487,6 +475,18 @@
                 outputState.X6 = inputState.X6 + g;
                 outputState.X7 = inputState.X7 + h;
             }
+        }
+
+        internal static void Sha512Init(out Array8<ulong> state)
+        {
+            state.X0 = 0x6a09e667f3bcc908;
+            state.X1 = 0xbb67ae8584caa73b;
+            state.X2 = 0x3c6ef372fe94f82b;
+            state.X3 = 0xa54ff53a5f1d36f1;
+            state.X4 = 0x510e527fade682d1;
+            state.X5 = 0x9b05688c2b3e6c1f;
+            state.X6 = 0x1f83d9abfb41bd6b;
+            state.X7 = 0x5be0cd19137e2179;
         }
     }
 }

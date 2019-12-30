@@ -5,6 +5,7 @@
         /*
 		r = 2 * p
 		*/
+
         private static void GetP3Dbl(out GroupElementP1P1 r, ref GroupElementP3 p)
         {
             GroupElementP2 q;

@@ -10,7 +10,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
             FieldOperations.Multiplication(out var x, ref h.X, ref recip);
             FieldOperations.Multiplication(out var y, ref h.Y, ref recip);
             FieldOperations.ToBytes(s, offset, ref y);
-            s[offset + 31] ^= (byte) (FieldOperations.IsNegative(ref x) << 7);
+            s[offset + 31] ^= (byte)(FieldOperations.IsNegative(ref x) << 7);
         }
     }
 }

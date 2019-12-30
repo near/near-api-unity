@@ -4,49 +4,6 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
 {
     internal static partial class GroupOperations
     {
-        private static void Slide(sbyte[] r, byte[] a)
-        {
-            for (var i = 0; i < 256; ++i)
-                r[i] = (sbyte) (1 & (a[i >> 3] >> (i & 7)));
-
-            for (var i = 0; i < 256; ++i)
-                if (r[i] != 0)
-                    for (var b = 1; b <= 6 && i + b < 256; ++b)
-                        if (r[i + b] != 0)
-                        {
-                            if (r[i] + (r[i + b] << b) <= 15)
-                            {
-                                r[i] += (sbyte) (r[i + b] << b);
-                                r[i + b] = 0;
-                            }
-                            else if (r[i] - (r[i + b] << b) >= -15)
-                            {
-                                r[i] -= (sbyte) (r[i + b] << b);
-                                for (var k = i + b; k < 256; ++k)
-                                {
-                                    if (r[k] == 0)
-                                    {
-                                        r[k] = 1;
-                                        break;
-                                    }
-
-                                    r[k] = 0;
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-        }
-
-        /*
-		r = a * A + b * B
-		where a = a[0]+256*a[1]+...+256^31 a[31].
-		and b = b[0]+256*b[1]+...+256^31 b[31].
-		B is the Ed25519 base point (x,4/5) with x positive.
-		*/
-
         public static void DoubleScalarMult(out GroupElementP2 r, byte[] a, ref GroupElementP3 A, byte[] b)
         {
             var Bi = LookupTables.Base2;
@@ -122,5 +79,48 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
                 P1P1ConvertToP2(out r, ref t);
             }
         }
+
+        private static void Slide(sbyte[] r, byte[] a)
+        {
+            for (var i = 0; i < 256; ++i)
+                r[i] = (sbyte)(1 & (a[i >> 3] >> (i & 7)));
+
+            for (var i = 0; i < 256; ++i)
+                if (r[i] != 0)
+                    for (var b = 1; b <= 6 && i + b < 256; ++b)
+                        if (r[i + b] != 0)
+                        {
+                            if (r[i] + (r[i + b] << b) <= 15)
+                            {
+                                r[i] += (sbyte)(r[i + b] << b);
+                                r[i + b] = 0;
+                            }
+                            else if (r[i] - (r[i + b] << b) >= -15)
+                            {
+                                r[i] -= (sbyte)(r[i + b] << b);
+                                for (var k = i + b; k < 256; ++k)
+                                {
+                                    if (r[k] == 0)
+                                    {
+                                        r[k] = 1;
+                                        break;
+                                    }
+
+                                    r[k] = 0;
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+        }
+
+        /*
+		r = a * A + b * B
+		where a = a[0]+256*a[1]+...+256^31 a[31].
+		and b = b[0]+256*b[1]+...+256^31 b[31].
+		B is the Ed25519 base point (x,4/5) with x positive.
+		*/
     }
 }

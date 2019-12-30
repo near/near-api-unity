@@ -4,14 +4,14 @@ namespace NearClientUnity.Utilities
 {
     public class KeyPairEd25519 : KeyPair
     {
+        private readonly byte[] _expandedSecretKey;
         private readonly PublicKey _publicKey;
         private readonly string _secretKey;
-        private readonly byte[] _expandedSecretKey;
 
         public KeyPairEd25519(string secretKey)
         {
             var publicKeyFromSeed = Ed25519.Ed25519.PublicKeyFromSeed(Base58.Decode(secretKey));
-            var publicKeyFromSeed32 = new ByteArray32 {Buffer = publicKeyFromSeed};
+            var publicKeyFromSeed32 = new ByteArray32 { Buffer = publicKeyFromSeed };
 
             _publicKey = new PublicKey(KeyType.Ed25519, publicKeyFromSeed32);
             _secretKey = secretKey;
@@ -29,26 +29,26 @@ namespace NearClientUnity.Utilities
             return new KeyPairEd25519(Base58.Encode(randomSecretKey));
         }
 
-        public override Signature Sign(byte[] message)
-        {
-            var signature = Ed25519.Ed25519.Sign(message, _expandedSecretKey);
-            var sign = new Signature {SignatureBytes = signature, PublicKey = this._publicKey};
-            return sign;
-        }
-
-        public override bool Verify(byte[] message, byte[] signature)
-        {
-            return Ed25519.Ed25519.Verify(signature, message, _publicKey.Data.Buffer);
-        }
-
         public override PublicKey GetPublicKey()
         {
             return _publicKey;
         }
 
+        public override Signature Sign(byte[] message)
+        {
+            var signature = Ed25519.Ed25519.Sign(message, _expandedSecretKey);
+            var sign = new Signature { SignatureBytes = signature, PublicKey = this._publicKey };
+            return sign;
+        }
+
         public override string ToString()
         {
             return $"ed25519:{_secretKey}";
+        }
+
+        public override bool Verify(byte[] message, byte[] signature)
+        {
+            return Ed25519.Ed25519.Verify(signature, message, _publicKey.Data.Buffer);
         }
     }
 }

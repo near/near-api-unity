@@ -10,22 +10,14 @@ namespace NearClientUnity.Utilities
         public static readonly BinaryWriter Null = new BinaryWriter();
 
         protected Stream OutStream;
-        private byte[] _buffer;
-        private Encoding _encoding;
-        private Encoder _encoder;
-        private bool _leaveOpen;
-        private char[] _tmpOneCharBuffer;
-        private byte[] _largeByteBuffer;
-        private int _maxChars;
         private const int LargeByteBufferSize = 256;
-
-        protected BinaryWriter()
-        {
-            OutStream = Stream.Null;
-            _buffer = new byte[16];
-            _encoding = new UTF8Encoding(false, true);
-            _encoder = _encoding.GetEncoder();
-        }
+        private byte[] _buffer;
+        private Encoder _encoder;
+        private Encoding _encoding;
+        private byte[] _largeByteBuffer;
+        private bool _leaveOpen;
+        private int _maxChars;
+        private char[] _tmpOneCharBuffer;
 
         public BinaryWriter(Stream output) : this(output, new UTF8Encoding(false, true))
         {
@@ -48,23 +40,12 @@ namespace NearClientUnity.Utilities
             _leaveOpen = leaveOpen;
         }
 
-        public virtual void Close()
+        protected BinaryWriter()
         {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing) return;
-            if (_leaveOpen)
-                OutStream.Flush();
-            else
-                OutStream.Close();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
+            OutStream = Stream.Null;
+            _buffer = new byte[16];
+            _encoding = new UTF8Encoding(false, true);
+            _encoder = _encoding.GetEncoder();
         }
 
         public virtual Stream BaseStream
@@ -74,6 +55,16 @@ namespace NearClientUnity.Utilities
                 Flush();
                 return OutStream;
             }
+        }
+
+        public virtual void Close()
+        {
+            Dispose(true);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
         }
 
         public virtual void Flush()
@@ -102,23 +93,23 @@ namespace NearClientUnity.Utilities
 
         public virtual void Write(uint value)
         {
-            _buffer[0] = (byte) value;
-            _buffer[1] = (byte) (value >> 8);
-            _buffer[2] = (byte) (value >> 16);
-            _buffer[3] = (byte) (value >> 24);
+            _buffer[0] = (byte)value;
+            _buffer[1] = (byte)(value >> 8);
+            _buffer[2] = (byte)(value >> 16);
+            _buffer[3] = (byte)(value >> 24);
             OutStream.Write(_buffer, 0, 4);
         }
 
         public virtual void Write(ulong value)
         {
-            _buffer[0] = (byte) value;
-            _buffer[1] = (byte) (value >> 8);
-            _buffer[2] = (byte) (value >> 16);
-            _buffer[3] = (byte) (value >> 24);
-            _buffer[4] = (byte) (value >> 32);
-            _buffer[5] = (byte) (value >> 40);
-            _buffer[6] = (byte) (value >> 48);
-            _buffer[7] = (byte) (value >> 56);
+            _buffer[0] = (byte)value;
+            _buffer[1] = (byte)(value >> 8);
+            _buffer[2] = (byte)(value >> 16);
+            _buffer[3] = (byte)(value >> 24);
+            _buffer[4] = (byte)(value >> 32);
+            _buffer[5] = (byte)(value >> 40);
+            _buffer[6] = (byte)(value >> 48);
+            _buffer[7] = (byte)(value >> 56);
 
             OutStream.Write(_buffer, 0, 8);
         }
@@ -137,7 +128,7 @@ namespace NearClientUnity.Utilities
             Contract.EndContractBlock();
 
             int len = _encoding.GetByteCount(value);
-            Write((uint) len);
+            Write((uint)len);
 
             if (_largeByteBuffer == null)
             {
@@ -184,6 +175,15 @@ namespace NearClientUnity.Utilities
                     numLeft -= charCount;
                 }
             }
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposing) return;
+            if (_leaveOpen)
+                OutStream.Flush();
+            else
+                OutStream.Close();
         }
     }
 }

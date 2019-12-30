@@ -176,6 +176,7 @@
     <Compile Include="Utilities\PublicKey.cs" />
     <Compile Include="Utilities\UInt128.cs" />
     <Compile Include="Utilities\Web.cs" />
+    <Compile Include="WalletAccount.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

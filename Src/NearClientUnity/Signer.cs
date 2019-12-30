@@ -1,6 +1,6 @@
-﻿using System.Security.Cryptography;
+﻿using NearClientUnity.Utilities;
+using System.Security.Cryptography;
 using System.Threading.Tasks;
-using NearClientUnity.Utilities;
 
 namespace NearClientUnity
 {
@@ -9,6 +9,7 @@ namespace NearClientUnity
         /**
         * Creates new key and returns public key.
         */
+
         public abstract Task<PublicKey> CreateKeyAsync(string accountId, string networkId = "");
 
         /**
@@ -16,6 +17,7 @@ namespace NearClientUnity
          * @param accountId accountId to retrieve from.
          * @param networkId network for this accountId.
          */
+
         public abstract Task<PublicKey> GetPublicKeyAsync(string accountId = "", string networkId = "");
 
         /**
@@ -24,6 +26,7 @@ namespace NearClientUnity
          * @param accountId accountId to use for signing.
          * @param networkId network for this accontId.
          */
+
         public abstract Task<Utilities.Signature> SignHashAsync(byte[] hash, string accountId = "", string networkId = "");
 
         /**
@@ -32,6 +35,7 @@ namespace NearClientUnity
          * @param accountId accountId to use for signing.
          * @param networkId network for this accontId.
          */
+
         public async Task<Utilities.Signature> SignMessageAsync(byte[] message, string accountId = "", string networkId = "")
         {
             byte[] messageSha256;
@@ -44,5 +48,5 @@ namespace NearClientUnity
             var result = await SignHashAsync(messageSha256, accountId, networkId);
             return result;
         }
-}
+    }
 }

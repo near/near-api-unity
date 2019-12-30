@@ -16,6 +16,22 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group
       GroupElement_precomp (Duif): (y+x,y-x,2dxy)
     */
 
+    internal struct GroupElementCached
+    {
+        public FieldElement T2d;
+        public FieldElement YminusX;
+        public FieldElement YplusX;
+        public FieldElement Z;
+    }
+
+    internal struct GroupElementP1P1
+    {
+        public FieldElement T;
+        public FieldElement X;
+        public FieldElement Y;
+        public FieldElement Z;
+    }
+
     internal struct GroupElementP2
     {
         public FieldElement X;
@@ -25,25 +41,17 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group
 
     internal struct GroupElementP3
     {
+        public FieldElement T;
         public FieldElement X;
         public FieldElement Y;
         public FieldElement Z;
-        public FieldElement T;
-    }
-
-    internal struct GroupElementP1P1
-    {
-        public FieldElement X;
-        public FieldElement Y;
-        public FieldElement Z;
-        public FieldElement T;
     }
 
     internal struct GroupElementPreComp
     {
-        public FieldElement yplusx;
-        public FieldElement yminusx;
         public FieldElement xy2d;
+        public FieldElement yminusx;
+        public FieldElement yplusx;
 
         public GroupElementPreComp(FieldElement yplusx, FieldElement yminusx, FieldElement xy2d)
         {
@@ -51,13 +59,5 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group
             this.yminusx = yminusx;
             this.xy2d = xy2d;
         }
-    }
-
-    internal struct GroupElementCached
-    {
-        public FieldElement YplusX;
-        public FieldElement YminusX;
-        public FieldElement Z;
-        public FieldElement T2d;
     }
 }

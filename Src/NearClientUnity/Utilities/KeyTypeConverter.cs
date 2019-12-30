@@ -9,9 +9,9 @@ namespace NearClientUnity.Utilities
             switch (keyType)
             {
                 case KeyType.Ed25519:
-                {
-                    return "ed25519";
-                }
+                    {
+                        return "ed25519";
+                    }
                 default:
                     throw new NotSupportedException($"Unknown key type {keyType}");
             }
@@ -22,9 +22,9 @@ namespace NearClientUnity.Utilities
             switch (keyType.ToLower())
             {
                 case "ed25519":
-                {
-                    return KeyType.Ed25519;
-                }
+                    {
+                        return KeyType.Ed25519;
+                    }
                 default:
                     throw new NotSupportedException($"Unknown key type {keyType}");
             }

@@ -1,7 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using NearClientUnity.KeyStores;
+﻿using NearClientUnity.KeyStores;
 using NearClientUnity.Utilities;
+using System;
+using System.Threading.Tasks;
 
 namespace NearClientUnity
 {
@@ -13,6 +13,9 @@ namespace NearClientUnity
         {
             _keyStore = keyStore;
         }
+
+        public KeyStore KeyStore => _keyStore;
+
         public override async Task<PublicKey> CreateKeyAsync(string accountId, string networkId = "")
         {
             var keyPair = KeyPair.FromRandom("ed25519");

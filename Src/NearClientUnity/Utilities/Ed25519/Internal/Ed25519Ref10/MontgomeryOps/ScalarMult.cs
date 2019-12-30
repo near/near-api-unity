@@ -37,7 +37,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.MontgomeryOps
             uint swap = 0;
             for (var pos = 254; pos >= 0; --pos)
             {
-                var b = (uint) (e[pos / 8] >> (pos & 7));
+                var b = (uint)(e[pos / 8] >> (pos & 7));
                 b &= 1;
                 swap ^= b;
                 FieldOperations.ControlledSwap(ref x2, ref x3, swap);

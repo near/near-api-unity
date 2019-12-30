@@ -1,20 +1,13 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
-using UnityEngine.Networking.PlayerConnection;
 
 namespace NearClientUnity
 {
     public class SignedTransaction
     {
-        public Transaction Transaction { get; set; }
         public NearSignature Signature { get; set; }
-
-        public virtual byte[] Encode()
-        {
-            var result = new byte[3];
-            return result;
-        }
+        public Transaction Transaction { get; set; }
 
         public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId, string networkId)
         {
@@ -29,7 +22,7 @@ namespace NearClientUnity
                 BlockHash = blockHash
             };
             var message = new byte[32]; //ToDo: Need implementation serialize
-            
+
             byte[] hash;
             using (var sha256 = SHA256.Create())
             {
@@ -108,6 +101,12 @@ namespace NearClientUnity
             };
 
             var result = new Tuple<byte[], SignedTransaction>(hash, signedTx);
+            return result;
+        }
+
+        public virtual byte[] Encode()
+        {
+            var result = new byte[3];
             return result;
         }
     }

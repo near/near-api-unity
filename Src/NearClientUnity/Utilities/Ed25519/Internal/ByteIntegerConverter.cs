@@ -1,35 +1,9 @@
 ﻿namespace NearClientUnity.Utilities.Ed25519.Internal
 {
-    // Loops? Arrays? Never heard of that stuff
-    // Library avoids unnecessary heap allocations and unsafe code
-    // so this ugly code becomes necessary :(
+    // Loops? Arrays? Never heard of that stuff Library avoids unnecessary heap allocations and
+    // unsafe code so this ugly code becomes necessary :(
     internal static class ByteIntegerConverter
     {
-        private static ulong LoadBigEndian64(byte[] buf, int offset)
-        {
-            return
-                buf[offset + 7]
-                | ((ulong) buf[offset + 6] << 8)
-                | ((ulong) buf[offset + 5] << 16)
-                | ((ulong) buf[offset + 4] << 24)
-                | ((ulong) buf[offset + 3] << 32)
-                | ((ulong) buf[offset + 2] << 40)
-                | ((ulong) buf[offset + 1] << 48)
-                | ((ulong) buf[offset + 0] << 56);
-        }
-
-        public static void StoreBigEndian64(byte[] buf, int offset, ulong value)
-        {
-            buf[offset + 7] = unchecked((byte) value);
-            buf[offset + 6] = unchecked((byte) (value >> 8));
-            buf[offset + 5] = unchecked((byte) (value >> 16));
-            buf[offset + 4] = unchecked((byte) (value >> 24));
-            buf[offset + 3] = unchecked((byte) (value >> 32));
-            buf[offset + 2] = unchecked((byte) (value >> 40));
-            buf[offset + 1] = unchecked((byte) (value >> 48));
-            buf[offset + 0] = unchecked((byte) (value >> 56));
-        }
-
         public static void Array16LoadBigEndian64(out Array16<ulong> output, byte[] input, int inputOffset)
         {
             output.X0 = LoadBigEndian64(input, inputOffset + 0);
@@ -48,6 +22,31 @@
             output.X13 = LoadBigEndian64(input, inputOffset + 104);
             output.X14 = LoadBigEndian64(input, inputOffset + 112);
             output.X15 = LoadBigEndian64(input, inputOffset + 120);
+        }
+
+        public static void StoreBigEndian64(byte[] buf, int offset, ulong value)
+        {
+            buf[offset + 7] = unchecked((byte)value);
+            buf[offset + 6] = unchecked((byte)(value >> 8));
+            buf[offset + 5] = unchecked((byte)(value >> 16));
+            buf[offset + 4] = unchecked((byte)(value >> 24));
+            buf[offset + 3] = unchecked((byte)(value >> 32));
+            buf[offset + 2] = unchecked((byte)(value >> 40));
+            buf[offset + 1] = unchecked((byte)(value >> 48));
+            buf[offset + 0] = unchecked((byte)(value >> 56));
+        }
+
+        private static ulong LoadBigEndian64(byte[] buf, int offset)
+        {
+            return
+                buf[offset + 7]
+                | ((ulong)buf[offset + 6] << 8)
+                | ((ulong)buf[offset + 5] << 16)
+                | ((ulong)buf[offset + 4] << 24)
+                | ((ulong)buf[offset + 3] << 32)
+                | ((ulong)buf[offset + 2] << 40)
+                | ((ulong)buf[offset + 1] << 48)
+                | ((ulong)buf[offset + 0] << 56);
         }
     }
 }

@@ -9,7 +9,7 @@
         public abstract string PrevHash { get; set; }
         public abstract string PrevStateRoot { get; set; }
         public abstract int TimeStamp { get; set; }
-        public abstract  TotalWeight TotalWeight { get; set; }
+        public abstract TotalWeight TotalWeight { get; set; }
         public abstract string TxRoot { get; set; }
     }
 }

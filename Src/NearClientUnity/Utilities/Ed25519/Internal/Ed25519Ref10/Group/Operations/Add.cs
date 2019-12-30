@@ -1,5 +1,4 @@
-﻿using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Field;
-using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Field.Operations;
+﻿using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Field.Operations;
 
 namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operations
 {

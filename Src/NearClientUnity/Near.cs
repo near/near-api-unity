@@ -1,20 +1,16 @@
-﻿using System;
+﻿using NearClientUnity.KeyStores;
+using NearClientUnity.Utilities;
+using System;
 using System.Dynamic;
 using System.Threading.Tasks;
-using NearClientUnity.KeyStores;
-using NearClientUnity.Utilities;
 
 namespace NearClientUnity
 {
     public class Near
     {
+        private AccountCreator _accountCreator;
         private NearConfig _config;
         private Connection _connection;
-        private AccountCreator _accountCreator;
-
-        public NearConfig Config => _config;
-        public Connection Connection => _connection;
-        public AccountCreator AccountCreator => _accountCreator;
 
         public Near(NearConfig config)
         {
@@ -52,24 +48,9 @@ namespace NearClientUnity
             }
         }
 
-        public async Task<Account> AccountAsync(string accountId)
-        {
-            var account = new Account(_connection, accountId);
-            await account.FetchStateAsync();
-            return account;
-        }
-
-        public async Task<Account> CreateAccountAsync(string accountId, PublicKey publicKey)
-        {
-            if (_accountCreator == null)
-            {
-                throw new Exception(
-                    "Must specify account creator, either via masterAccount or helperUrl configuration settings.");
-            }
-
-            await _accountCreator.CreateAccountAsync(accountId, publicKey);
-            return new Account(_connection, accountId);
-        }
+        public AccountCreator AccountCreator => _accountCreator;
+        public NearConfig Config => _config;
+        public Connection Connection => _connection;
 
         public static async Task<Near> ConnectAsync(dynamic config)
         {
@@ -89,7 +70,7 @@ namespace NearClientUnity
                         config.MasterAccount = accountKeyFile[0];
                     }
 
-                    config.Deps.KeyStore = new MergeKeyStore(new KeyStore[] {config.Deps.KeyStore, keyPathStore});
+                    config.Deps.KeyStore = new MergeKeyStore(new KeyStore[] { config.Deps.KeyStore, keyPathStore });
                 }
             }
             catch (Exception error)
@@ -98,6 +79,25 @@ namespace NearClientUnity
             }
 
             return new Near(config);
+        }
+
+        public async Task<Account> AccountAsync(string accountId)
+        {
+            var account = new Account(_connection, accountId);
+            await account.FetchStateAsync();
+            return account;
+        }
+
+        public async Task<Account> CreateAccountAsync(string accountId, PublicKey publicKey)
+        {
+            if (_accountCreator == null)
+            {
+                throw new Exception(
+                    "Must specify account creator, either via masterAccount or helperUrl configuration settings.");
+            }
+
+            await _accountCreator.CreateAccountAsync(accountId, publicKey);
+            return new Account(_connection, accountId);
         }
     }
 }

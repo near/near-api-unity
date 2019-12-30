@@ -8,6 +8,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
         /*
 		r = p
 		*/
+
         private static void P3ToCached(out GroupElementCached r, ref GroupElementP3 p)
         {
             FieldOperations.Add(out r.YplusX, ref p.Y, ref p.X);

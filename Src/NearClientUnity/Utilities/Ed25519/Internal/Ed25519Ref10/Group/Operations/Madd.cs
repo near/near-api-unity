@@ -7,6 +7,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
         /*
 		r = p + q
 		*/
+
         private static void Madd(out GroupElementP1P1 r, ref GroupElementP3 p, ref GroupElementPreComp q)
         {
             /* qhasm: YpX1 = Y1+X1 */

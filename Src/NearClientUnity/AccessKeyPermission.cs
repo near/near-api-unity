@@ -2,7 +2,7 @@
 {
     public class AccessKeyPermission
     {
-        public FunctionCallPermission FunctionCall { get; set; }
         public FullAccessPermission FullAccess { get; set; }
+        public FunctionCallPermission FunctionCall { get; set; }
     }
 }

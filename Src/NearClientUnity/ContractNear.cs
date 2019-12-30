@@ -1,18 +1,16 @@
-﻿using System;
-using System.Dynamic;
-using System.Runtime.InteropServices.Expando;
-using System.Threading.Tasks;
-using NearClientUnity.Providers;
+﻿using NearClientUnity.Providers;
 using NearClientUnity.Utilities;
+using System;
+using System.Threading.Tasks;
 
 namespace NearClientUnity
 {
     public class ContractNear
     {
         private readonly Account _account;
+        private readonly dynamic _changeMethods;
         private readonly string _contractId;
         private readonly dynamic _viewMethods;
-        private readonly dynamic _changeMethods;
 
         public ContractNear(Account account, string contractId, ContractOptions options)
         {

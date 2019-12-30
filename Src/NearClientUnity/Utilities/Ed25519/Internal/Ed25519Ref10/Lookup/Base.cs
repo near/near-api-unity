@@ -6,6 +6,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Lookup
     internal static partial class LookupTables
     {
         /* base[i][j] = (j+1)*256^i*B */
+
         //32*8
         internal static readonly GroupElementPreComp[][] Base =
         {

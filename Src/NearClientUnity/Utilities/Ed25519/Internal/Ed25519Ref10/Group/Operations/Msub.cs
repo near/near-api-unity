@@ -8,6 +8,7 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Group.Operatio
         /*
 		r = p - q
 		*/
+
         private static void Msub(out GroupElementP1P1 r, ref GroupElementP3 p, ref GroupElementPreComp q)
         {
             FieldElement t0;

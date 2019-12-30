@@ -1,34 +1,143 @@
-﻿using System;
+﻿using NearClientUnity.Providers;
+using NearClientUnity.Utilities;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
-using NearClientUnity.Providers;
-using NearClientUnity.Utilities;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace NearClientUnity
 {
     public class Account
     {
-        private readonly Connection _connection;
-        private readonly string _accountId;
-        private AccountState _state;
-        private AccessKey _accessKey;
-        private bool _ready;
-        private const int TxStatusRetryWait = 500;
-        private const int TxStatusRetryNumber = 10;
         // Default amount of tokens to be send with the function calls. Used to pay for the fees
         // incurred while running the contract execution. The unused amount will be refunded back to
         // the originator.
         private const int DefaultFuncCallAmount = 2000000;
 
+        private const int TxStatusRetryNumber = 10;
+        private const int TxStatusRetryWait = 500;
+        private readonly string _accountId;
+        private readonly Connection _connection;
+        private AccessKey _accessKey;
+        private bool _ready;
+        private AccountState _state;
 
         public Account(Connection connection, string accountId)
         {
             _connection = connection;
             _accountId = accountId;
+        }
+
+        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128 amount,
+            string methodName = "", string contractId = "")
+        {
+            AccessKey accessKey;
+            if (string.IsNullOrEmpty(contractId) || string.IsNullOrWhiteSpace(contractId))
+            {
+                accessKey = AccessKey.FullAccessKey();
+            }
+            else
+            {
+                accessKey = AccessKey.FunctionCallAccessKey(contractId, (string.IsNullOrWhiteSpace(methodName) || string.IsNullOrEmpty(methodName)) ? Array.Empty<string>() : new[] { methodName }, amount);
+            }
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey,
+            string methodName = "", string contractId = "")
+        {
+            AccessKey accessKey;
+            if (string.IsNullOrEmpty(contractId) || string.IsNullOrWhiteSpace(contractId))
+            {
+                accessKey = AccessKey.FullAccessKey();
+            }
+            else
+            {
+                accessKey = AccessKey.FunctionCallAccessKey(contractId, (string.IsNullOrWhiteSpace(methodName) || string.IsNullOrEmpty(methodName)) ? Array.Empty<string>() : new[] { methodName });
+            }
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> CreateAccountAsync(string newAccountId, string publicKey,
+            UInt128 amount)
+        {
+            var accessKey = AccessKey.FullAccessKey();
+            var actions = new[]
+                {Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(new PublicKey(publicKey), accessKey)};
+            var result = await SignAndSendTransactionAsync(newAccountId, actions);
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> CreateAccountAsync(string newAccountId, PublicKey publicKey,
+            UInt128 amount)
+        {
+            var accessKey = AccessKey.FullAccessKey();
+            var actions = new[]
+                {Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(publicKey, accessKey)};
+            var result = await SignAndSendTransactionAsync(newAccountId, actions);
+            return result;
+        }
+
+        public async Task<Account> CreateAndDeployContractAsync(string contractId, string publicKey, byte[] data,
+            UInt128 amount)
+        {
+            var accessKey = AccessKey.FullAccessKey();
+            var actions = new[]
+            {
+                Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(new PublicKey(publicKey), accessKey),
+                Action.DeployContract(data)
+            };
+
+            await SignAndSendTransactionAsync(contractId, actions);
+
+            var contractAccount = new Account(_connection, contractId);
+            return contractAccount;
+        }
+
+        public async Task<Account> CreateAndDeployContractAsync(string contractId, PublicKey publicKey, byte[] data,
+            UInt128 amount)
+        {
+            var accessKey = AccessKey.FullAccessKey();
+            var actions = new[]
+            {
+                Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(publicKey, accessKey),
+                Action.DeployContract(data)
+            };
+
+            await SignAndSendTransactionAsync(contractId, actions);
+
+            var contractAccount = new Account(_connection, contractId);
+            return contractAccount;
+        }
+
+        public async Task<FinalExecutionOutcome> DeleteAccountAsync(string beneficiaryId)
+        {
+            var result =
+                await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteAccount(beneficiaryId) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> DeleteKeyAsync(string publicKey)
+        {
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteKey(new PublicKey(publicKey)) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> DeleteKeyAsync(PublicKey publicKey)
+        {
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteKey(publicKey) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> DeployContractAsync(byte[] data)
+        {
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeployContract(data) });
+            return result;
         }
 
         public async Task FetchStateAsync()
@@ -47,6 +156,94 @@ namespace NearClientUnity
                 throw new Exception(
                     $"Failed to fetch access key for '{_accountId}' with public key {publicKey.ToString()}");
             }
+        }
+
+        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, int gas, UInt128 amount)
+        {
+            if (args == null)
+            {
+                args = new ExpandoObject();
+            }
+
+            var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
+            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, gas, amount) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, UInt128 amount)
+        {
+            if (args == null)
+            {
+                args = new ExpandoObject();
+            }
+
+            var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
+            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, DefaultFuncCallAmount, amount) });
+            return result;
+        }
+
+        /// Returns array of {access_key: AccessKey, public_key: PublicKey} items.
+        public async Task<dynamic> GetAccessKeysAsync()
+        {
+            var response = await _connection.Provider.QueryAsync($"access_key/{_accountId}", "");
+            var result = JObject.Parse(response);
+            return result;
+        }
+
+        public async Task<dynamic> GetAccountDetailsAsync()
+        {
+            // TODO: update the response value to return all the different keys, not just app keys.
+            // Also if we need this function, or getAccessKeys is good enough.
+            var accessKeys = await GetAccessKeysAsync() as List<dynamic>;
+            dynamic result = new ExpandoObject();
+            var authorizedApps = new List<dynamic>();
+
+            foreach (var key in accessKeys)
+            {
+                if (key.access_key.permission.FunctionCall == null) continue;
+                var perm = key.access_key.permission.FunctionCall;
+                dynamic authorizedApp = new ExpandoObject();
+                authorizedApp.ContractId = perm.receiver_id;
+                authorizedApp.Amount = perm.allowance;
+                authorizedApp.PublicKey = key.public_key;
+                authorizedApps.Add(authorizedApp);
+            }
+
+            result.AuthorizedApps = authorizedApps.ToArray();
+            result.Transactions = Array.Empty<dynamic>();
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> SendMoneyAsync(string receiverId, UInt128 amount)
+        {
+            var result = await SignAndSendTransactionAsync(receiverId, new[] { Action.Transfer(amount) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> StakeAsync(string publicKey, UInt128 amount)
+        {
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.Stake(amount, new PublicKey(publicKey)) });
+            return result;
+        }
+
+        public async Task<FinalExecutionOutcome> StakeAsync(PublicKey publicKey, UInt128 amount)
+        {
+            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.Stake(amount, publicKey) });
+            return result;
+        }
+
+        public async Task<dynamic> ViewFunctionAsync(string contractId, string methodName, dynamic args)
+        {
+            var response = await _connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(JsonConvert.SerializeObject(args)));
+
+            var result = JObject.Parse(response);
+
+            if (result.logs != null && result.logs.GetType() is ArraySegment<string> && result.logs.Length > 0)
+            {
+                PrintLogs(contractId, result.logs);
+            }
+
+            return result;
         }
 
         protected async Task<bool> GetReadyStatusAsync()
@@ -140,201 +337,6 @@ namespace NearClientUnity
 
             // ToDo: Add typed error handling
 
-            return result;
-        }
-
-        public async Task<Account> CreateAndDeployContractAsync(string contractId, string publicKey, byte[] data,
-            UInt128 amount)
-        {
-            var accessKey = AccessKey.FullAccessKey();
-            var actions = new []
-            {
-                Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(new PublicKey(publicKey), accessKey),
-                Action.DeployContract(data)
-            };
-
-            await SignAndSendTransactionAsync(contractId, actions);
-
-            var contractAccount = new Account(_connection, contractId);
-            return contractAccount;
-        }
-
-        public async Task<Account> CreateAndDeployContractAsync(string contractId, PublicKey publicKey, byte[] data,
-            UInt128 amount)
-        {
-            var accessKey = AccessKey.FullAccessKey();
-            var actions = new[]
-            {
-                Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(publicKey, accessKey),
-                Action.DeployContract(data)
-            };
-
-            await SignAndSendTransactionAsync(contractId, actions);
-
-            var contractAccount = new Account(_connection, contractId);
-            return contractAccount;
-        }
-
-        public async Task<FinalExecutionOutcome> SendMoneyAsync(string receiverId, UInt128 amount)
-        {
-            var result = await SignAndSendTransactionAsync(receiverId, new[] {Action.Transfer(amount)});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> CreateAccountAsync(string newAccountId, string publicKey,
-            UInt128 amount)
-        {
-            var accessKey = AccessKey.FullAccessKey();
-            var actions = new[]
-                {Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(new PublicKey(publicKey), accessKey)};
-            var result = await SignAndSendTransactionAsync(newAccountId, actions);
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> CreateAccountAsync(string newAccountId, PublicKey publicKey,
-            UInt128 amount)
-        {
-            var accessKey = AccessKey.FullAccessKey();
-            var actions = new[]
-                {Action.CreateAccount(), Action.Transfer(amount), Action.AddKey(publicKey, accessKey)};
-            var result = await SignAndSendTransactionAsync(newAccountId, actions);
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> DeleteAccountAsync(string beneficiaryId)
-        {
-            var result =
-                await SignAndSendTransactionAsync(_accountId, new[] {Action.DeleteAccount(beneficiaryId)});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> DeployContractAsync(byte[] data)
-        {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] {Action.DeployContract(data)});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, int gas, UInt128 amount)
-        {
-            if (args == null) {
-                args = new ExpandoObject();
-            }
-
-            var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
-            var result = await SignAndSendTransactionAsync(contractId, new Action[]{Action.FunctionCall(methodName,methodArgs, gas, amount)});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, UInt128 amount)
-        {
-            if (args == null)
-            {
-                args = new ExpandoObject();
-            }
-
-            var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
-            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, DefaultFuncCallAmount, amount) });
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128 amount,
-            string methodName = "", string contractId = "")
-        {
-            AccessKey accessKey;
-            if (string.IsNullOrEmpty(contractId) || string.IsNullOrWhiteSpace(contractId))
-            {
-                accessKey = AccessKey.FullAccessKey();
-            } else
-            {
-                accessKey = AccessKey.FunctionCallAccessKey(contractId, (string.IsNullOrWhiteSpace(methodName) || string.IsNullOrEmpty(methodName)) ? Array.Empty<string>() : new[] {methodName}, amount);
-            }
-            var result = await SignAndSendTransactionAsync(_accountId, new[]{Action.AddKey(new PublicKey(publicKey), accessKey)});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey,
-            string methodName = "", string contractId = "")
-        {
-            AccessKey accessKey;
-            if (string.IsNullOrEmpty(contractId) || string.IsNullOrWhiteSpace(contractId))
-            {
-                accessKey = AccessKey.FullAccessKey();
-            }
-            else
-            {
-                accessKey = AccessKey.FunctionCallAccessKey(contractId, (string.IsNullOrWhiteSpace(methodName) || string.IsNullOrEmpty(methodName)) ? Array.Empty<string>() : new[] { methodName });
-            }
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> DeleteKeyAsync(string publicKey)
-        {
-            var result = await SignAndSendTransactionAsync(_accountId, new[]{Action.DeleteKey(new PublicKey(publicKey))});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> DeleteKeyAsync(PublicKey publicKey)
-        {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteKey(publicKey) });
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> StakeAsync(string publicKey,UInt128 amount)
-        {
-            var result = await SignAndSendTransactionAsync(_accountId, new[]{Action.Stake(amount, new PublicKey(publicKey))});
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> StakeAsync(PublicKey publicKey, UInt128 amount)
-        {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.Stake(amount, publicKey)});
-            return result;
-        }
-
-        public async Task<dynamic> ViewFunctionAsync(string contractId, string methodName, dynamic args)
-        {
-            var response = await _connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(JsonConvert.SerializeObject(args)));
-            
-            var result = JObject.Parse(response);
-
-            if (result.logs != null && result.logs.GetType() is ArraySegment<string> && result.logs.Length >0 )
-            {
-                PrintLogs(contractId, result.logs);
-            }
-
-            return result;
-        }
-
-        /// Returns array of {access_key: AccessKey, public_key: PublicKey} items.
-        public async Task<dynamic>  GetAccessKeysAsync()
-        {
-            var response = await _connection.Provider.QueryAsync($"access_key/{_accountId}", "");
-            var result = JObject.Parse(response);
-            return result;
-        }
-
-        public async Task<dynamic> GetAccountDetailsAsync()
-        {
-            // TODO: update the response value to return all the different keys, not just app keys.
-            // Also if we need this function, or getAccessKeys is good enough.
-            var accessKeys = await GetAccessKeysAsync() as List<dynamic>;
-            dynamic result = new ExpandoObject();
-            var authorizedApps = new List<dynamic>();
-
-            foreach (var key in accessKeys)
-            {
-                if (key.access_key.permission.FunctionCall == null) continue;
-                var perm = key.access_key.permission.FunctionCall;
-                dynamic authorizedApp = new ExpandoObject();
-                authorizedApp.ContractId = perm.receiver_id;
-                authorizedApp.Amount = perm.allowance;
-                authorizedApp.PublicKey = key.public_key;
-                authorizedApps.Add(authorizedApp);
-            }
-
-            result.AuthorizedApps = authorizedApps.ToArray();
-            result.Transactions = Array.Empty<dynamic>();
             return result;
         }
     }

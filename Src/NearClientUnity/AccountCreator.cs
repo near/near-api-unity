@@ -1,5 +1,5 @@
-﻿using System.Threading.Tasks;
-using NearClientUnity.Utilities;
+﻿using NearClientUnity.Utilities;
+using System.Threading.Tasks;
 
 namespace NearClientUnity
 {

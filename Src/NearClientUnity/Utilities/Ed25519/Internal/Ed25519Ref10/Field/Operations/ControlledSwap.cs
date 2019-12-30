@@ -8,6 +8,7 @@
 
         Preconditions: b in {0,1}.
         */
+
         public static void ControlledSwap(ref FieldElement f, ref FieldElement g, uint b)
         {
             var f0 = f.X0;
@@ -41,7 +42,7 @@
             var x8 = f8 ^ g8;
             var x9 = f9 ^ g9;
 
-            var negb = unchecked((int) -b);
+            var negb = unchecked((int)-b);
             x0 &= negb;
             x1 &= negb;
             x2 &= negb;
