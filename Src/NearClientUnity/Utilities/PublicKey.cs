@@ -42,6 +42,13 @@ namespace NearClientUnity.Utilities
             }
         }
 
+        public override string ToString()
+        {
+            var key = Base58.Encode(_data.Buffer);
+            var type = KeyTypeConverter.KeyTypeToString(_keyType);
+            return $"{type}:{key}";
+        }
+
         internal ByteArray32 Data => _data;
     }
 }
