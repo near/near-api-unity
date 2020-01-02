@@ -8,7 +8,9 @@ namespace NearClientUnityTests
         [Test]
         public void KeyStoreTestMethod()
         {
-            // TODO: Add your test code here            
+            // TODO: Add your test code here
+            var user = "";
+            Assert.AreEqual(user, "");
         }
     }
 }
