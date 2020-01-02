@@ -56,10 +56,7 @@ namespace NearClientUnity.Utilities
 
         public virtual byte[] ReadBytes(int count)
         {
-            if (count < 0) throw new ArgumentOutOfRangeException("count", "ArgumentOutOfRange_NeedNonNegNum");
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-            Contract.Ensures(Contract.Result<byte[]>().Length <= Contract.OldValue(count));
-            Contract.EndContractBlock();
+            if (count < 0) throw new ArgumentOutOfRangeException("count", "ArgumentOutOfRange_NeedNonNegNum");           
 
             if (count == 0)
             {
@@ -84,8 +81,6 @@ namespace NearClientUnity.Utilities
 
         public virtual string ReadString()
         {
-            Contract.Ensures(Contract.Result<string>() != null);
-
             var currentPosition = 0;
 
             var stringLength = (int)ReadUInt();

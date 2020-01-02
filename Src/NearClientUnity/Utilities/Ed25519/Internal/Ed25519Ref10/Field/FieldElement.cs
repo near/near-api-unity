@@ -9,8 +9,6 @@ namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Field
 
         internal FieldElement(params int[] elements)
         {
-            Contract.Requires<ArgumentException>(elements.Length == 10);
-
             X0 = elements[0];
             X1 = elements[1];
             X2 = elements[2];

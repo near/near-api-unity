@@ -31,8 +31,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Hash bytes
         /// </returns>
         public static byte[] Hash(byte[] data)
-        {
-            Contract.Requires<ArgumentNullException>(data != null);
+        {   
             return Hash(data, 0, data.Length);
         }
 
@@ -52,11 +51,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Hash bytes
         /// </returns>
         public static byte[] Hash(byte[] data, int index, int length)
-        {
-            Contract.Requires<ArgumentNullException>(data != null);
-            Contract.Requires<ArgumentOutOfRangeException>(index >= 0 && length >= 0);
-            Contract.Requires<ArgumentException>(index + length <= data.Length);
-
+        {   
             var hasher = new Sha512();
             hasher.Update(data, index, length);
             return hasher.Finalize();
@@ -70,9 +65,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </param>
         public void Finalize(ArraySegment<byte> output)
         {
-            Contract.Requires<ArgumentNullException>(output.Array != null);
-            Contract.Requires<ArgumentException>(output.Count == 64);
-
             Update(Padding, 0, Padding.Length);
             Array16<ulong> block;
             ByteIntegerConverter.Array16LoadBigEndian64(out block, _buffer, 0);
@@ -144,11 +136,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Sequence length
         /// </param>
         public void Update(byte[] data, int index, int length)
-        {
-            Contract.Requires<ArgumentNullException>(data != null);
-            Contract.Requires<ArgumentOutOfRangeException>(index >= 0 && length >= 0);
-            Contract.Requires<ArgumentException>(index + length <= data.Length);
-
+        {   
             Array16<ulong> block;
             var bytesInBuffer = (int)_totalBytes & (BlockSize - 1);
             _totalBytes += (uint)length;

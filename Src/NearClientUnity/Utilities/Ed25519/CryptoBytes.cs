@@ -20,9 +20,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </returns>
         public static byte[] Base58Decode(string input)
         {
-            Contract.Requires<ArgumentNullException>(input != null);
-            Contract.Ensures(Contract.Result<byte[]>() != null);
-
             // Decode Base58 string to BigInteger
             BigInteger intData = 0;
             for (var i = 0; i < input.Length; i++)
@@ -54,9 +51,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Encoding result
         /// </returns>
         public static string Base58Encode(byte[] input)
-        {
-            Contract.Requires<ArgumentNullException>(input != null);
-            Contract.Ensures(Contract.Result<string>() != null);
+        {   
 
             // Decode byte[] to BigInteger
             var intData = input.Aggregate<byte, BigInteger>(0, (current, t) => current * 256 + t);
@@ -91,8 +86,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// True if arrays are equal
         /// </returns>
         public static bool ConstantTimeEquals(byte[] x, byte[] y)
-        {
-            Contract.Requires<ArgumentNullException>(x != null && y != null);
+        {            
             if (x.Length != y.Length)
                 return false;
             return InternalConstantTimeEquals(x, 0, y, 0, x.Length) != 0;
@@ -114,8 +108,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// True if contents of x and y are equal
         /// </returns>
         public static bool ConstantTimeEquals(ArraySegment<byte> x, ArraySegment<byte> y)
-        {
-            Contract.Requires<ArgumentNullException>(x.Array != null && y.Array != null);
+        {           
             if (x.Count != y.Count)
                 return false;
             return InternalConstantTimeEquals(x.Array, x.Offset, y.Array, y.Offset, x.Count) != 0;
@@ -147,11 +140,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </returns>
         public static bool ConstantTimeEquals(byte[] x, int xOffset, byte[] y, int yOffset, int length)
         {
-            Contract.Requires<ArgumentNullException>(x != null && y != null);
-            Contract.Requires<ArgumentOutOfRangeException>(xOffset >= 0 && yOffset >= 0 && length >= 0);
-            Contract.Requires<ArgumentException>(xOffset + length <= x.Length);
-            Contract.Requires<ArgumentException>(yOffset + length <= y.Length);
-
             return InternalConstantTimeEquals(x, xOffset, y, yOffset, length) != 0;
         }
 
@@ -268,8 +256,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Byte array
         /// </param>
         public static void Wipe(byte[] data)
-        {
-            Contract.Requires<ArgumentNullException>(data != null);
+        {   
             InternalWipe(data, 0, data.Length);
         }
 
@@ -287,10 +274,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </param>
         public static void Wipe(byte[] data, int offset, int length)
         {
-            Contract.Requires<ArgumentNullException>(data != null);
-            Contract.Requires<ArgumentOutOfRangeException>(offset >= 0 && length >= 0);
-            Contract.Requires<ArgumentException>(offset + length <= data.Length);
-
             InternalWipe(data, offset, length);
         }
 

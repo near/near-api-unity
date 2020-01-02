@@ -31,8 +31,7 @@ namespace NearClientUnity.Utilities
                 throw new ArgumentNullException(nameof(encoding));
             if (!output.CanWrite)
                 throw new ArgumentException("Argument_StreamNotWritable");
-            Contract.EndContractBlock();
-
+            
             OutStream = output;
             _buffer = new byte[16];
             _encoding = encoding;
@@ -86,8 +85,7 @@ namespace NearClientUnity.Utilities
         {
             if (buffer == null)
                 throw new ArgumentNullException("buffer");
-            Contract.EndContractBlock();
-
+            
             OutStream.Write(buffer, 0, buffer.Length);
         }
 
@@ -125,8 +123,7 @@ namespace NearClientUnity.Utilities
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
-            Contract.EndContractBlock();
-
+            
             int len = _encoding.GetByteCount(value);
             Write((uint)len);
 

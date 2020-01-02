@@ -37,10 +37,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Expanded form of the private key
         /// </returns>
         public static byte[] ExpandedPrivateKeyFromSeed(byte[] privateKeySeed)
-        {
-            Contract.Requires<ArgumentNullException>(privateKeySeed != null);
-            Contract.Requires<ArgumentException>(privateKeySeed.Length == PrivateKeySeedSize);
-
+        {   
             byte[] privateKey;
             byte[] publicKey;
             KeyPairFromSeed(out publicKey, out privateKey, privateKeySeed);
@@ -62,9 +59,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </param>
         public static void KeyPairFromSeed(out byte[] publicKey, out byte[] expandedPrivateKey, byte[] privateKeySeed)
         {
-            Contract.Requires<ArgumentNullException>(privateKeySeed != null);
-            Contract.Requires<ArgumentException>(privateKeySeed.Length == PrivateKeySeedSize);
-
             var pk = new byte[PublicKeySize];
             var sk = new byte[ExpandedPrivateKeySize];
 
@@ -88,12 +82,6 @@ namespace NearClientUnity.Utilities.Ed25519
         public static void KeyPairFromSeed(ArraySegment<byte> publicKey, ArraySegment<byte> expandedPrivateKey,
             ArraySegment<byte> privateKeySeed)
         {
-            Contract.Requires<ArgumentNullException>(publicKey.Array != null && expandedPrivateKey.Array != null &&
-                                                     privateKeySeed.Array != null);
-            Contract.Requires<ArgumentException>(expandedPrivateKey.Count == ExpandedPrivateKeySize &&
-                                                 privateKeySeed.Count == PrivateKeySeedSize);
-            Contract.Requires<ArgumentException>(publicKey.Count == PublicKeySize);
-
             Ed25519Operations.CryptoSignKeyPair(
                 publicKey.Array, publicKey.Offset,
                 expandedPrivateKey.Array, expandedPrivateKey.Offset,
@@ -110,9 +98,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </returns>
         public static byte[] PublicKeyFromSeed(byte[] privateKeySeed)
         {
-            Contract.Requires<ArgumentNullException>(privateKeySeed != null);
-            Contract.Requires<ArgumentException>(privateKeySeed.Length == PrivateKeySeedSize);
-
             byte[] privateKey;
             byte[] publicKey;
             KeyPairFromSeed(out publicKey, out privateKey, privateKeySeed);
@@ -135,10 +120,6 @@ namespace NearClientUnity.Utilities.Ed25519
         public static void Sign(ArraySegment<byte> signature, ArraySegment<byte> message,
             ArraySegment<byte> expandedPrivateKey)
         {
-            Contract.Requires<ArgumentNullException>(signature.Array != null && message.Array != null &&
-                                                     expandedPrivateKey.Array != null);
-            Contract.Requires<ArgumentException>(expandedPrivateKey.Count == ExpandedPrivateKeySize);
-
             Ed25519Operations.CryptoSign(signature.Array, signature.Offset, message.Array, message.Offset,
                 message.Count, expandedPrivateKey.Array, expandedPrivateKey.Offset);
         }
@@ -154,9 +135,6 @@ namespace NearClientUnity.Utilities.Ed25519
         /// </param>
         public static byte[] Sign(byte[] message, byte[] expandedPrivateKey)
         {
-            Contract.Requires<ArgumentNullException>(message != null && expandedPrivateKey != null);
-            Contract.Requires<ArgumentException>(expandedPrivateKey.Length == ExpandedPrivateKeySize);
-
             var signature = new byte[SignatureSize];
             Sign(new ArraySegment<byte>(signature), new ArraySegment<byte>(message),
                 new ArraySegment<byte>(expandedPrivateKey));
@@ -181,8 +159,6 @@ namespace NearClientUnity.Utilities.Ed25519
         public static bool Verify(ArraySegment<byte> signature, ArraySegment<byte> message,
             ArraySegment<byte> publicKey)
         {
-            Contract.Requires<ArgumentException>(signature.Count == SignatureSize && publicKey.Count == PublicKeySize);
-
             return Ed25519Operations.CryptoSignVerify(signature.Array, signature.Offset, message.Array,
                 message.Offset, message.Count, publicKey.Array, publicKey.Offset);
         }
@@ -203,11 +179,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// True if signature is valid, false if it's not
         /// </returns>
         public static bool Verify(byte[] signature, byte[] message, byte[] publicKey)
-        {
-            Contract.Requires<ArgumentNullException>(signature != null && message != null && publicKey != null);
-            Contract.Requires<ArgumentException>(signature.Length == SignatureSize &&
-                                                 publicKey.Length == PublicKeySize);
-
+        {            
             return Ed25519Operations.CryptoSignVerify(signature, 0, message, 0, message.Length, publicKey, 0);
         }
     }
