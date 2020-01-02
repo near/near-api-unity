@@ -84,6 +84,7 @@ namespace NearClientUnity.KeyStores
         {
             return await Task.Factory.StartNew(() =>
             {
+                if (!Directory.Exists(_keyDir)) return new string[0];
                 var directory = new DirectoryInfo(_keyDir);
                 var networks = directory.GetDirectories().Select(subDirectory => subDirectory.Name).ToList();
                 return networks.ToArray();
