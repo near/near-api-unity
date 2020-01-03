@@ -46,8 +46,8 @@ namespace NearClientUnity.KeyStores
         public static async Task<dynamic[]> ReadKeyFile(string path)
         {
             var accountInfo = await LoadJsonFile(path);
-            var privateKey = accountInfo.PrivateKey;
-            if (!privateKey && accountInfo.SecretKey) privateKey = accountInfo.SecretKey;
+            string privateKey = accountInfo.PrivateKey;
+            if (privateKey == null && accountInfo.SecretKey != null) privateKey = accountInfo.SecretKey;
             return new dynamic[] { accountInfo.AccountId, KeyPair.FromString(privateKey) };
         }
 
@@ -59,6 +59,8 @@ namespace NearClientUnity.KeyStores
                 {
                     await RemoveKeyAsync(network, account);
                 }
+
+                await RemoveNetworkAsync(network);
             }
         }
 
@@ -94,11 +96,23 @@ namespace NearClientUnity.KeyStores
         public override async Task RemoveKeyAsync(string networkId, string accountId)
         {
             var filePath = GetKeyFilePath(networkId, accountId);
-            if (!File.Exists(filePath))
+            if (File.Exists(filePath))
             {
                 await Task.Factory.StartNew(() =>
                 {
                     File.Delete(filePath);
+                });
+            }
+        }
+
+        public async Task RemoveNetworkAsync(string networkId)
+        {
+            var dirPath = GetNetworkDirPath(networkId);
+            if(Directory.Exists(dirPath))
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    Directory.Delete(dirPath);
                 });
             }
         }
@@ -121,6 +135,11 @@ namespace NearClientUnity.KeyStores
         private string GetKeyFilePath(string networkId, string accountId)
         {
             return $"{_keyDir}/{networkId}/{accountId}.json";
+        }
+
+        private string GetNetworkDirPath(string networkId)
+        {
+            return $"{_keyDir}/{networkId}/";
         }
     }
 }
