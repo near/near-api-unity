@@ -1,8 +1,8 @@
 ﻿namespace NearClientUnity.Providers
 {
-    public abstract class ExecutionError
+    public class ExecutionError
     {
-        public abstract string ErrorMessage { get; set; }
-        public abstract string ErrorType { get; set; }
+        public string ErrorMessage { get; set; }
+        public string ErrorType { get; set; }
     }
 }
