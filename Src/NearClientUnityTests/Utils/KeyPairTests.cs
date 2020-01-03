@@ -37,5 +37,23 @@ namespace NearClientUnityTests.Utils
             var signature = keypair.Sign(messageSha256);
             Assert.AreEqual(keypair.Verify(messageSha256, signature.SignatureBytes), true);
         }
+
+        [Test]
+        public void ItShouldInitFromSecret()
+        {
+            var keypair = new KeyPairEd25519(secretKey: "5JueXZhEEVqGVT5powZ5twyPP8wrap2K7RdAYGGdjBwiBdd7Hh6aQxMP1u3Ma9Yanq1nEv32EW7u8kUJsZ6f315C");
+            Assert.AreEqual(keypair.GetPublicKey().ToString(), "ed25519:EWrekY1deMND7N3Q7Dixxj12wD7AVjFRt2H9q21QHUSW");
+        }
+
+        [Test]
+        public void ItShouldConvertToString()
+        {
+            var keypair = KeyPairEd25519.FromRandom();
+            var keypairFromString = (KeyPairEd25519)KeyPair.FromString(keypair.ToString());
+            Assert.AreEqual(keypairFromString.GetSecretKey(), keypair.GetSecretKey());
+            var key = "ed25519:2wyRcSwSuHtRVmkMCGjPwnzZmQLeXLzLLyED1NDMt4BjnKgQL6tF85yBx6Jr26D2dUNeC716RBoTxntVHsegogYw";
+            var keypairFromKeyString = KeyPair.FromString(key);
+            Assert.AreEqual(keypairFromKeyString.ToString(), key);
+        }
     }
 }
