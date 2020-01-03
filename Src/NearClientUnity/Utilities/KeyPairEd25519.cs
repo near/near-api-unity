@@ -34,6 +34,11 @@ namespace NearClientUnity.Utilities
             return _publicKey;
         }
 
+        public string GetSecretKey()
+        {
+            return _secretKey;
+        }
+
         public override Signature Sign(byte[] message)
         {
             var signature = Ed25519.Ed25519.Sign(message, _expandedSecretKey);
