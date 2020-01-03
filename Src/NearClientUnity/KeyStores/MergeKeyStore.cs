@@ -9,6 +9,8 @@ namespace NearClientUnity.KeyStores
     {
         private KeyStore[] _keyStores;
 
+        public KeyStore[] Stores => _keyStores;
+
         public MergeKeyStore(KeyStore[] keyStores)
         {
             _keyStores = keyStores;
