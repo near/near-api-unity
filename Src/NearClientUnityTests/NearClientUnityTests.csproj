@@ -62,6 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="KeyStores\KeyStoreTests.cs" />
     <Compile Include="Utils\KeyPairTests.cs" />
+    <Compile Include="Utils\ProviderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

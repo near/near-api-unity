@@ -1,8 +1,8 @@
 ﻿namespace NearClientUnity.Providers
 {
-    public abstract class ExecutionOutcomeWithId
+    public class ExecutionOutcomeWithId
     {
-        public abstract string Id { get; set; }
-        public abstract ExecutionOutcome Outcome { get; set; }
+        public string Id { get; set; }
+        public ExecutionOutcome Outcome { get; set; }
     }
 }

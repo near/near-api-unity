@@ -9,7 +9,7 @@ namespace NearClientUnity.Providers
     {
         public static dynamic GetTransactionLastResult(FinalExecutionOutcome txResult)
         {
-            if (txResult.Status == null || txResult.Status.GetType() != typeof(object) || string.Equals(
+            if (txResult.Status == null || txResult.Status.GetType() != typeof(FinalExecutionStatus) || string.Equals(
                     txResult.Status.SuccessValue, null, StringComparison.Ordinal)) return null;
             var value = Convert.FromBase64String(txResult.Status.SuccessValue).ToString();
 

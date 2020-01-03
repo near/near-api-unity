@@ -1,8 +1,8 @@
 ﻿namespace NearClientUnity.Providers
 {
-    public abstract class FinalExecutionStatus
+    public class FinalExecutionStatus
     {
-        public abstract ExecutionError Failure { get; set; }
-        public abstract string SuccessValue { get; set; }
+        public ExecutionError Failure { get; set; }
+        public string SuccessValue { get; set; }
     }
 }

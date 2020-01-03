@@ -1,9 +1,9 @@
 ﻿namespace NearClientUnity.Providers
 {
-    public abstract class ExecutionStatus
+    public class ExecutionStatus
     {
-        public abstract ExecutionError Failure { get; set; }
-        public abstract string SuccessReceiptId { get; set; }
-        public abstract string SuccessValue { get; set; }
+        public ExecutionError Failure { get; set; }
+        public string SuccessReceiptId { get; set; }
+        public string SuccessValue { get; set; }
     }
 }

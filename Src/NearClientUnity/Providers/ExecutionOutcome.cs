@@ -1,11 +1,11 @@
 ﻿namespace NearClientUnity.Providers
 {
-    public abstract class ExecutionOutcome
+    public class ExecutionOutcome
     {
-        public abstract int GasBurnt { get; set; }
-        public abstract string[] Logs { get; set; }
-        public abstract string[] ReceiptIds { get; set; }
-        public abstract ExecutionStatus Status { get; set; }
-        public abstract ExecutionStatusBasic StatusBasic { get; set; }
+        public int GasBurnt { get; set; }
+        public string[] Logs { get; set; }
+        public string[] ReceiptIds { get; set; }
+        public ExecutionStatus Status { get; set; }
+        public ExecutionStatusBasic StatusBasic { get; set; }
     }
 }
