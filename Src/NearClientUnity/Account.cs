@@ -20,14 +20,14 @@ namespace NearClientUnity
         private const int TxStatusRetryNumber = 10;
         private const int TxStatusRetryWait = 500;
         private readonly string _accountId;
-        private readonly Connection _connection;
+        public readonly Connection Connection;
         private AccessKey _accessKey;
         private bool _ready;
         private AccountState _state;
 
         public Account(Connection connection, string accountId)
         {
-            _connection = connection;
+            Connection = connection;
             _accountId = accountId;
         }
 
@@ -95,7 +95,7 @@ namespace NearClientUnity
 
             await SignAndSendTransactionAsync(contractId, actions);
 
-            var contractAccount = new Account(_connection, contractId);
+            var contractAccount = new Account(Connection, contractId);
             return contractAccount;
         }
 
@@ -111,7 +111,7 @@ namespace NearClientUnity
 
             await SignAndSendTransactionAsync(contractId, actions);
 
-            var contractAccount = new Account(_connection, contractId);
+            var contractAccount = new Account(Connection, contractId);
             return contractAccount;
         }
 
@@ -143,13 +143,13 @@ namespace NearClientUnity
         public async Task FetchStateAsync()
         {
             _accessKey = null;
-            _state = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
-            var publicKey = await _connection.Signer.GetPublicKeyAsync(_accountId, _connection.NetworkId);
+            _state = await Connection.Provider.QueryAsync($"account/{_accountId}", "");
+            var publicKey = await Connection.Signer.GetPublicKeyAsync(_accountId, Connection.NetworkId);
             if (publicKey == null) return;
             try
             {
                 _accessKey =
-                    await _connection.Provider.QueryAsync($"access_key/{_accountId}/{publicKey.ToString()}", "");
+                    await Connection.Provider.QueryAsync($"access_key/{_accountId}/{publicKey.ToString()}", "");
             }
             catch (Exception)
             {
@@ -185,7 +185,7 @@ namespace NearClientUnity
         /// Returns array of {access_key: AccessKey, public_key: PublicKey} items.
         public async Task<dynamic> GetAccessKeysAsync()
         {
-            var response = await _connection.Provider.QueryAsync($"access_key/{_accountId}", "");
+            var response = await Connection.Provider.QueryAsync($"access_key/{_accountId}", "");
             var result = JObject.Parse(response);
             return result;
         }
@@ -234,7 +234,7 @@ namespace NearClientUnity
 
         public async Task<dynamic> ViewFunctionAsync(string contractId, string methodName, dynamic args)
         {
-            var response = await _connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(JsonConvert.SerializeObject(args)));
+            var response = await Connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(JsonConvert.SerializeObject(args)));
 
             var result = JObject.Parse(response);
 
@@ -277,7 +277,7 @@ namespace NearClientUnity
             {
                 try
                 {
-                    var result = await _connection.Provider.GetTxStatusAsync(txHash, accountId);
+                    var result = await Connection.Provider.GetTxStatusAsync(txHash, accountId);
                     return result;
                 }
                 catch (Exception)
@@ -299,15 +299,15 @@ namespace NearClientUnity
                 throw new Exception($"Can not sign transactions, no matching key pair found in Signer.");
             }
 
-            var status = await _connection.Provider.GetStatusAsync();
+            var status = await Connection.Provider.GetStatusAsync();
 
             var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, ++_accessKey.Nonce, actions,
-                Base58.Decode(status.SyncInfo.LatestBlockHash), _connection.Signer, _accountId, _connection.NetworkId);
+                Base58.Decode(status.SyncInfo.LatestBlockHash), Connection.Signer, _accountId, Connection.NetworkId);
             FinalExecutionOutcome result;
 
             try
             {
-                result = await _connection.Provider.SendTransactionAsync(signTransaction.Item2);
+                result = await Connection.Provider.SendTransactionAsync(signTransaction.Item2);
             }
             catch (Exception e)
             {
