@@ -4,5 +4,6 @@
     {
         public string[] changeMethods { get; set; }
         public string[] viewMethods { get; set; }
+        public string sender { get; set; }
     }
 }

@@ -71,9 +71,11 @@
     <Compile Include="AccessKeyTests.cs" />
     <Compile Include="Utils\TestUtils.cs" />
     <Compile Include="Utils\EnvironmentConfig.cs" />
+    <Compile Include="Utils\Wasm.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Utils\main.wasm" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NearClientUnity\NearClientUnity.csproj">

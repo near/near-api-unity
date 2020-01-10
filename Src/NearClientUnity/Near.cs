@@ -15,19 +15,26 @@ namespace NearClientUnity
         public Near(NearConfig config)
         {
             _config = config;
-
-            dynamic connectionConfig = new ExpandoObject();
-
-            connectionConfig.NetworkId = config.NetworkId;
-
-            connectionConfig.Provider = new ExpandoObject();
-            connectionConfig.Provider.Type = "JsonRpcProvider";
-            connectionConfig.Provider.Args = new ExpandoObject();
-            connectionConfig.Provider.Args.Url = config.NodeUrl;
-
-            connectionConfig.Signer = new ExpandoObject();
-            connectionConfig.Signer.Type = "InMemorySigner";
-            connectionConfig.Signer.KeyStore = config.KeyStore;
+            
+            dynamic providerArgs = new ExpandoObject();
+            providerArgs.Url = config.NodeUrl;
+            dynamic signerArgs = new ExpandoObject();
+            signerArgs.KeyStore = config.KeyStore;           
+            var connectionConfig = new ConnectionConfig()
+            {
+                NetworkId = config.NetworkId,
+                Provider = new ProviderConfig()
+                {
+                    Type = config.ProviderType,
+                    Args = providerArgs
+                },
+                Signer = new SignerConfig()
+                {
+                    Type = config.SignerType,
+                    Args = signerArgs
+                }
+            };
+            _connection = Connection.FromConfig(connectionConfig);
 
             if (config.MasterAccount != null)
             {
@@ -55,7 +62,7 @@ namespace NearClientUnity
         public static async Task<Near> ConnectAsync(dynamic config)
         {
             // Try to find extra key in `KeyPath` if provided.
-            if (config.KeyPath == null && config.Deps == null && config.Deps.KeyStore == null) return new Near(config);
+            if (config.KeyPath == null) return new Near(config);
             try
             {
                 var accountKeyFile = await UnencryptedFileSystemKeyStore.ReadKeyFile(config.keyPath);
@@ -70,12 +77,12 @@ namespace NearClientUnity
                         config.MasterAccount = accountKeyFile[0];
                     }
 
-                    config.Deps.KeyStore = new MergeKeyStore(new KeyStore[] { config.Deps.KeyStore, keyPathStore });
+                    config.KeyStore = new MergeKeyStore(new KeyStore[] { config.KeyStore, keyPathStore });
                 }
             }
             catch (Exception error)
-            {
-                Console.WriteLine($"Failed to load master account key from {config.KeyPath}: {error}");
+            {                
+                Console.WriteLine($"Failed to load master account key from {config.KeyPath}: {error}");                
             }
 
             return new Near(config);

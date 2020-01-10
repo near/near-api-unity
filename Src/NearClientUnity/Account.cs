@@ -19,7 +19,7 @@ namespace NearClientUnity
 
         private const int TxStatusRetryNumber = 10;
         private const int TxStatusRetryWait = 500;
-        private readonly string _accountId;
+        public readonly string AccountId;
         public readonly Connection Connection;
         private AccessKey _accessKey;
         private bool _ready;
@@ -28,7 +28,7 @@ namespace NearClientUnity
         public Account(Connection connection, string accountId)
         {
             Connection = connection;
-            _accountId = accountId;
+            AccountId = accountId;
         }
 
         public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128 amount,
@@ -43,7 +43,7 @@ namespace NearClientUnity
             {
                 accessKey = AccessKey.FunctionCallAccessKey(contractId, (string.IsNullOrWhiteSpace(methodName) || string.IsNullOrEmpty(methodName)) ? Array.Empty<string>() : new[] { methodName }, amount);
             }
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
             return result;
         }
 
@@ -59,7 +59,7 @@ namespace NearClientUnity
             {
                 accessKey = AccessKey.FunctionCallAccessKey(contractId, (string.IsNullOrWhiteSpace(methodName) || string.IsNullOrEmpty(methodName)) ? Array.Empty<string>() : new[] { methodName });
             }
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.AddKey(new PublicKey(publicKey), accessKey) });
             return result;
         }
 
@@ -118,47 +118,47 @@ namespace NearClientUnity
         public async Task<FinalExecutionOutcome> DeleteAccountAsync(string beneficiaryId)
         {
             var result =
-                await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteAccount(beneficiaryId) });
+                await SignAndSendTransactionAsync(AccountId, new[] { Action.DeleteAccount(beneficiaryId) });
             return result;
         }
 
         public async Task<FinalExecutionOutcome> DeleteKeyAsync(string publicKey)
         {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteKey(new PublicKey(publicKey)) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.DeleteKey(new PublicKey(publicKey)) });
             return result;
         }
 
         public async Task<FinalExecutionOutcome> DeleteKeyAsync(PublicKey publicKey)
         {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeleteKey(publicKey) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.DeleteKey(publicKey) });
             return result;
         }
 
         public async Task<FinalExecutionOutcome> DeployContractAsync(byte[] data)
         {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.DeployContract(data) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.DeployContract(data) });
             return result;
         }
 
         public async Task FetchStateAsync()
         {
             _accessKey = null;
-            _state = await Connection.Provider.QueryAsync($"account/{_accountId}", "");
-            var publicKey = await Connection.Signer.GetPublicKeyAsync(_accountId, Connection.NetworkId);
+            _state = await Connection.Provider.QueryAsync($"account/{AccountId}", "");
+            var publicKey = await Connection.Signer.GetPublicKeyAsync(AccountId, Connection.NetworkId);
             if (publicKey == null) return;
             try
             {
                 _accessKey =
-                    await Connection.Provider.QueryAsync($"access_key/{_accountId}/{publicKey.ToString()}", "");
+                    await Connection.Provider.QueryAsync($"access_key/{AccountId}/{publicKey.ToString()}", "");
             }
             catch (Exception)
             {
                 throw new Exception(
-                    $"Failed to fetch access key for '{_accountId}' with public key {publicKey.ToString()}");
+                    $"Failed to fetch access key for '{AccountId}' with public key {publicKey.ToString()}");
             }
         }
 
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, int gas, UInt128 amount)
+        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, ulong? gas, UInt128 amount)
         {
             if (args == null)
             {
@@ -185,7 +185,7 @@ namespace NearClientUnity
         /// Returns array of {access_key: AccessKey, public_key: PublicKey} items.
         public async Task<dynamic> GetAccessKeysAsync()
         {
-            var response = await Connection.Provider.QueryAsync($"access_key/{_accountId}", "");
+            var response = await Connection.Provider.QueryAsync($"access_key/{AccountId}", "");
             var result = JObject.Parse(response);
             return result;
         }
@@ -222,13 +222,13 @@ namespace NearClientUnity
 
         public async Task<FinalExecutionOutcome> StakeAsync(string publicKey, UInt128 amount)
         {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.Stake(amount, new PublicKey(publicKey)) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.Stake(amount, new PublicKey(publicKey)) });
             return result;
         }
 
         public async Task<FinalExecutionOutcome> StakeAsync(PublicKey publicKey, UInt128 amount)
         {
-            var result = await SignAndSendTransactionAsync(_accountId, new[] { Action.Stake(amount, publicKey) });
+            var result = await SignAndSendTransactionAsync(AccountId, new[] { Action.Stake(amount, publicKey) });
             return result;
         }
 
@@ -302,7 +302,7 @@ namespace NearClientUnity
             var status = await Connection.Provider.GetStatusAsync();
 
             var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, ++_accessKey.Nonce, actions,
-                Base58.Decode(status.SyncInfo.LatestBlockHash), Connection.Signer, _accountId, Connection.NetworkId);
+                Base58.Decode(status.SyncInfo.LatestBlockHash), Connection.Signer, AccountId, Connection.NetworkId);
             FinalExecutionOutcome result;
 
             try
@@ -314,7 +314,7 @@ namespace NearClientUnity
                 var parts = e.Message.Split(':');
                 if (parts.Length > 1 && parts[1] == " Request timed out.")
                 {
-                    result = await RetryTxResultAsync(signTransaction.Item1, _accountId);
+                    result = await RetryTxResultAsync(signTransaction.Item1, AccountId);
                 }
                 else
                 {

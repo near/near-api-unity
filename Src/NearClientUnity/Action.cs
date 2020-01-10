@@ -51,7 +51,7 @@ namespace NearClientUnity
             return new Action(ActionType.DeployContract, args);
         }
 
-        public static Action FunctionCall(string methodName, byte[] methodArgs, int gas, UInt128 deposit)
+        public static Action FunctionCall(string methodName, byte[] methodArgs, ulong? gas, UInt128 deposit)
         {
             dynamic args = new ExpandoObject();
             args.MethodName = methodName;

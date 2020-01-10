@@ -41,11 +41,24 @@ namespace NearClientUnityTests.Utils
             return new Account(masterAccount.Connection, newAccountName);
         }
 
-        private static string GenerateUniqueString(string prefix)
+        public static string GenerateUniqueString(string prefix)
         {
             var timestamp = DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds;
             var randomInt = new Random().Next(0, 1000);
             return prefix + timestamp + randomInt;
+        }
+
+        public static async Task<ContractNear> DeployContract(Account workingAccount, string contractId, UInt128 amount)
+        {
+            var newPublicKey = await workingAccount.Connection.Signer.CreateKeyAsync(contractId, TestUtils.NetworkId);
+            var wasmBytes = Wasm.GetBytes();
+            await workingAccount.CreateAndDeployContractAsync(contractId, newPublicKey, wasmBytes, amount);
+            var options = new ContractOptions()
+            {
+                viewMethods = new string[] { "getValue", "getLastResult" },
+                changeMethods = new string[] { "setValue", "callPromise" }
+            };
+            return new ContractNear(workingAccount, contractId, options);
         }
     }
 }
