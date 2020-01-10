@@ -58,6 +58,7 @@
     <Reference Include="Microsoft.VisualStudio.CodeCoverage.Shim">
       <HintPath>..\packages\Microsoft.CodeCoverage.16.4.0\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
     </Reference>
+    <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="KeyStores\InMemoryKeyStoreTests.cs" />
@@ -67,6 +68,10 @@
     <Compile Include="KeyStores\KeyStoreTests.cs" />
     <Compile Include="Utils\SerializeTests.cs" />
     <Compile Include="Utils\KeyPairTests.cs" />
+    <Compile Include="Utils\ProviderTests.cs" />
+    <Compile Include="AccessKeyTests.cs" />
+    <Compile Include="Utils\TestUtils.cs" />
+    <Compile Include="Utils\EnvironmentConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
