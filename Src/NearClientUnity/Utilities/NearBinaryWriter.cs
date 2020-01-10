@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
 namespace NearClientUnity.Utilities
 {
-    public class BinaryWriter : IDisposable
+    public class NearBinaryWriter : IDisposable
     {
-        public static readonly BinaryWriter Null = new BinaryWriter();
+        public static readonly NearBinaryWriter Null = new NearBinaryWriter();
 
         protected Stream OutStream;
         private const int LargeByteBufferSize = 256;
@@ -19,11 +18,11 @@ namespace NearClientUnity.Utilities
         private int _maxChars;
         private char[] _tmpOneCharBuffer;
 
-        public BinaryWriter(Stream output) : this(output, new UTF8Encoding(false, true))
+        public NearBinaryWriter(Stream output) : this(output, new UTF8Encoding(false, true))
         {
         }
 
-        public BinaryWriter(Stream output, Encoding encoding, bool leaveOpen = false)
+        public NearBinaryWriter(Stream output, Encoding encoding, bool leaveOpen = false)
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
@@ -31,7 +30,7 @@ namespace NearClientUnity.Utilities
                 throw new ArgumentNullException(nameof(encoding));
             if (!output.CanWrite)
                 throw new ArgumentException("Argument_StreamNotWritable");
-            
+
             OutStream = output;
             _buffer = new byte[16];
             _encoding = encoding;
@@ -39,7 +38,7 @@ namespace NearClientUnity.Utilities
             _leaveOpen = leaveOpen;
         }
 
-        protected BinaryWriter()
+        protected NearBinaryWriter()
         {
             OutStream = Stream.Null;
             _buffer = new byte[16];
@@ -85,7 +84,7 @@ namespace NearClientUnity.Utilities
         {
             if (buffer == null)
                 throw new ArgumentNullException("buffer");
-            
+
             OutStream.Write(buffer, 0, buffer.Length);
         }
 
@@ -123,7 +122,7 @@ namespace NearClientUnity.Utilities
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
-            
+
             int len = _encoding.GetByteCount(value);
             Write((uint)len);
 

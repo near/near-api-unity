@@ -108,7 +108,7 @@ namespace NearClientUnity.KeyStores
         public async Task RemoveNetworkAsync(string networkId)
         {
             var dirPath = GetNetworkDirPath(networkId);
-            if(Directory.Exists(dirPath))
+            if (Directory.Exists(dirPath))
             {
                 await Task.Factory.StartNew(() =>
                 {

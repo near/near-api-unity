@@ -8,16 +8,16 @@ namespace NearClientUnityTests.KeyStores
     [TestFixture]
     public class MergeKeyStoreTests : KeyStoreTests
     {
+        [Test]
+        public async Task AddTwoKeysToNetworkAndRetrieveThem()
+        {
+            await AddTwoKeysToNetworkAndRetrieveThem_BaseTest();
+        }
+
         [OneTimeSetUp]
         public void ClassInit()
         {
-            _keyStore = new MergeKeyStore(new KeyStore[] {new InMemoryKeyStore(), new InMemoryKeyStore()});
-        }
-
-        [SetUp]
-        public void SetupBeforeEachTest()
-        {
-            SetupBeforeEachTestAync().Wait();
+            _keyStore = new MergeKeyStore(new KeyStore[] { new InMemoryKeyStore(), new InMemoryKeyStore() });
         }
 
         [Test]
@@ -51,12 +51,6 @@ namespace NearClientUnityTests.KeyStores
         }
 
         [Test]
-        public async Task AddTwoKeysToNetworkAndRetrieveThem()
-        {
-            await AddTwoKeysToNetworkAndRetrieveThem_BaseTest();
-        }
-
-        [Test]
         public async Task LooksUpKeyFromFallbackKeyStore()
         {
             var expectedKey = KeyPair.FromRandom("ED25519");
@@ -81,9 +75,14 @@ namespace NearClientUnityTests.KeyStores
         {
             var key1 = KeyPair.FromRandom("ED25519");
             await _keyStore.SetKeyAsync("network", "account", key1);
-            Assert.AreEqual(1,(await _keyStore.Stores[0].GetAccountsAsync("network")).Length);
+            Assert.AreEqual(1, (await _keyStore.Stores[0].GetAccountsAsync("network")).Length);
             Assert.AreEqual(0, (await _keyStore.Stores[1].GetAccountsAsync("network")).Length);
+        }
 
+        [SetUp]
+        public void SetupBeforeEachTest()
+        {
+            SetupBeforeEachTestAync().Wait();
         }
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Text;
 
 namespace NearClientUnity.Utilities
 {
-    public class BinaryReader : IDisposable
+    public class NearBinaryReader : IDisposable
     {
         private const int MaxCharBytesSize = 128;
 
@@ -18,11 +17,15 @@ namespace NearClientUnity.Utilities
         private Stream _stream;
 
         // From MaxCharBytesSize & Encoding
-        public BinaryReader(Stream input) : this(input, new UTF8Encoding())
+        public NearBinaryReader(Stream input) : this(input, new UTF8Encoding())
         {
         }
 
-        public BinaryReader(Stream input, Encoding encoding, bool leaveOpen = false)
+        public NearBinaryReader(Stream input, bool leaveOpen) : this(input, new UTF8Encoding(), leaveOpen)
+        {
+        }
+
+        public NearBinaryReader(Stream input, Encoding encoding, bool leaveOpen = false)
         {
             _stream = input;
             _decoder = encoding.GetDecoder();
@@ -56,7 +59,7 @@ namespace NearClientUnity.Utilities
 
         public virtual byte[] ReadBytes(int count)
         {
-            if (count < 0) throw new ArgumentOutOfRangeException("count", "ArgumentOutOfRange_NeedNonNegNum");           
+            if (count < 0) throw new ArgumentOutOfRangeException("count", "ArgumentOutOfRange_NeedNonNegNum");
 
             if (count == 0)
             {

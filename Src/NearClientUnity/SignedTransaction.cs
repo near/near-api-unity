@@ -1,4 +1,6 @@
-﻿using System;
+﻿using NearClientUnity.Utilities;
+using System;
+using System.IO;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 
@@ -9,7 +11,25 @@ namespace NearClientUnity
         public NearSignature Signature { get; set; }
         public Transaction Transaction { get; set; }
 
-        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId, string networkId)
+        public static SignedTransaction FromByteArray(byte[] rawBytes)
+        {
+            using (var ms = new MemoryStream(rawBytes))
+            {
+                return FromStream(ms);
+            }
+        }
+
+        public static SignedTransaction FromStream(MemoryStream stream)
+        {
+            return FromRawDataStream(stream);
+        }
+
+        public static SignedTransaction FromStream(ref MemoryStream stream)
+        {
+            return FromRawDataStream(stream);
+        }
+
+        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, ulong nonce, Action[] actions, ByteArray32 blockHash, Signer signer, string accountId, string networkId)
         {
             var publicKey = await signer.GetPublicKeyAsync(accountId, networkId);
             var transaction = new Transaction
@@ -21,7 +41,7 @@ namespace NearClientUnity
                 Actions = actions,
                 BlockHash = blockHash
             };
-            var message = new byte[32]; //ToDo: Need implementation serialize
+            var message = transaction.ToByteArray(); //ToDo:
 
             byte[] hash;
             using (var sha256 = SHA256.Create())
@@ -41,7 +61,7 @@ namespace NearClientUnity
             return result;
         }
 
-        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer, string accountId)
+        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, ulong nonce, Action[] actions, ByteArray32 blockHash, Signer signer, string accountId)
         {
             var publicKey = await signer.GetPublicKeyAsync(accountId);
             var transaction = new Transaction
@@ -53,7 +73,7 @@ namespace NearClientUnity
                 Actions = actions,
                 BlockHash = blockHash
             };
-            var message = new byte[32]; //ToDo: Need implementation serialize
+            var message = transaction.ToByteArray(); //ToDo:
 
             byte[] hash;
             using (var sha256 = SHA256.Create())
@@ -69,11 +89,11 @@ namespace NearClientUnity
                 Signature = new NearSignature(signature.SignatureBytes)
             };
 
-            var result = new Tuple<byte[], SignedTransaction>(hash, signedTx);
+            var result = new Tuple<byte[], SignedTransaction>(message, signedTx);
             return result;
         }
 
-        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, int nonce, Action[] actions, byte[] blockHash, Signer signer)
+        public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, ulong nonce, Action[] actions, ByteArray32 blockHash, Signer signer)
         {
             var publicKey = await signer.GetPublicKeyAsync();
             var transaction = new Transaction
@@ -84,7 +104,7 @@ namespace NearClientUnity
                 Actions = actions,
                 BlockHash = blockHash
             };
-            var message = new byte[32]; //ToDo: Need implementation serialize
+            var message = transaction.ToByteArray(); //ToDo:
 
             byte[] hash;
             using (var sha256 = SHA256.Create())
@@ -104,10 +124,32 @@ namespace NearClientUnity
             return result;
         }
 
-        public virtual byte[] Encode()
+        public byte[] ToByteArray()
         {
-            var result = new byte[3];
-            return result;
+            using (var ms = new MemoryStream())
+            {
+                using (var writer = new NearBinaryWriter(ms))
+                {
+                    writer.Write(Transaction.ToByteArray());
+                    writer.Write(Signature.ToByteArray());
+                    return ms.ToArray();
+                }
+            }
+        }
+
+        private static SignedTransaction FromRawDataStream(MemoryStream stream)
+        {
+            using (var reader = new NearBinaryReader(stream, true))
+            {
+                var transaction = Transaction.FromStream(ref stream);
+                var signature = NearSignature.FromStream(ref stream);
+
+                return new SignedTransaction()
+                {
+                    Transaction = transaction,
+                    Signature = signature,
+                };
+            }
         }
     }
 }

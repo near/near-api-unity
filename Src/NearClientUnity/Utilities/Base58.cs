@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 
@@ -38,7 +37,7 @@ namespace NearClientUnity.Utilities
         }
 
         public static string Encode(byte[] data)
-        {            
+        {
             var intData = data.Aggregate<byte, BigInteger>(0, (current, t) => current * 256 + t);
             var result = string.Empty;
 

@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="AccessKey.cs" />
     <Compile Include="AccessKeyPermission.cs" />
+    <Compile Include="AccessKeyPermissionType.cs" />
     <Compile Include="Account.cs" />
     <Compile Include="AccountCreator.cs" />
     <Compile Include="AccountState.cs" />
@@ -102,10 +103,11 @@
     <Compile Include="SignerType.cs" />
     <Compile Include="Transaction.cs" />
     <Compile Include="UrlAccountCreator.cs" />
+    <Compile Include="Utilities\ByteArray64.cs" />
     <Compile Include="Utilities\ByteArray32.cs" />
     <Compile Include="Utilities\Base58.cs" />
-    <Compile Include="Utilities\BinaryReader.cs" />
-    <Compile Include="Utilities\BinaryWriter.cs" />
+    <Compile Include="Utilities\NearBinaryReader.cs" />
+    <Compile Include="Utilities\NearBinaryWriter.cs" />
     <Compile Include="Utilities\Ed25519\CryptoBytes.cs" />
     <Compile Include="Utilities\Ed25519\Ed25519.cs" />
     <Compile Include="Utilities\Ed25519\Internal\Array16.cs" />
