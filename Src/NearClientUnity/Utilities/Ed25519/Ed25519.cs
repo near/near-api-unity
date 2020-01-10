@@ -1,6 +1,5 @@
 ﻿using NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Ed25519Ops;
 using System;
-using System.Diagnostics.Contracts;
 
 namespace NearClientUnity.Utilities.Ed25519
 {
@@ -37,7 +36,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Expanded form of the private key
         /// </returns>
         public static byte[] ExpandedPrivateKeyFromSeed(byte[] privateKeySeed)
-        {   
+        {
             byte[] privateKey;
             byte[] publicKey;
             KeyPairFromSeed(out publicKey, out privateKey, privateKeySeed);
@@ -179,7 +178,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// True if signature is valid, false if it's not
         /// </returns>
         public static bool Verify(byte[] signature, byte[] message, byte[] publicKey)
-        {            
+        {
             return Ed25519Operations.CryptoSignVerify(signature, 0, message, 0, message.Length, publicKey, 0);
         }
     }

@@ -27,8 +27,8 @@ namespace NearClientUnity
 
             foreach (var cm in options.changeMethods)
             {
-                _changeMethods[cm] = new Func<dynamic, int, UInt128, Task<dynamic>>(
-                    async (dynamic args, int gas, UInt128 amount) =>
+                _changeMethods[cm] = new Func<dynamic, ulong, UInt128, Task<dynamic>>(
+                    async (dynamic args, ulong gas, UInt128 amount) =>
                     {
                         var rawResult = await _account.FunctionCallAsync(_contractId, cm, args, gas, amount);
                         var result = Provider.GetTransactionLastResult(rawResult);

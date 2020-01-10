@@ -87,7 +87,7 @@ namespace NearClientUnity.Providers
 
         public override async Task<FinalExecutionOutcome> SendTransactionAsync(SignedTransaction signedTransaction)
         {
-            var bytes = signedTransaction.Encode();
+            var bytes = signedTransaction.ToByteArray();
             var parameters = new dynamic[1];
             parameters[0] = Convert.ToBase64String(bytes, 0, bytes.Length);
             var result = await SendJsonRpc("broadcast_tx_commit", parameters);

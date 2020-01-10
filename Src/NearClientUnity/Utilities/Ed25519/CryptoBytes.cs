@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -51,8 +50,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Encoding result
         /// </returns>
         public static string Base58Encode(byte[] input)
-        {   
-
+        {
             // Decode byte[] to BigInteger
             var intData = input.Aggregate<byte, BigInteger>(0, (current, t) => current * 256 + t);
 
@@ -86,7 +84,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// True if arrays are equal
         /// </returns>
         public static bool ConstantTimeEquals(byte[] x, byte[] y)
-        {            
+        {
             if (x.Length != y.Length)
                 return false;
             return InternalConstantTimeEquals(x, 0, y, 0, x.Length) != 0;
@@ -108,7 +106,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// True if contents of x and y are equal
         /// </returns>
         public static bool ConstantTimeEquals(ArraySegment<byte> x, ArraySegment<byte> y)
-        {           
+        {
             if (x.Count != y.Count)
                 return false;
             return InternalConstantTimeEquals(x.Array, x.Offset, y.Array, y.Offset, x.Count) != 0;
@@ -256,7 +254,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Byte array
         /// </param>
         public static void Wipe(byte[] data)
-        {   
+        {
             InternalWipe(data, 0, data.Length);
         }
 

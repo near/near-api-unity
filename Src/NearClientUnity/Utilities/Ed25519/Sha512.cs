@@ -1,6 +1,5 @@
 ﻿using NearClientUnity.Utilities.Ed25519.Internal;
 using System;
-using System.Diagnostics.Contracts;
 
 namespace NearClientUnity.Utilities.Ed25519
 {
@@ -31,7 +30,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Hash bytes
         /// </returns>
         public static byte[] Hash(byte[] data)
-        {   
+        {
             return Hash(data, 0, data.Length);
         }
 
@@ -51,7 +50,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Hash bytes
         /// </returns>
         public static byte[] Hash(byte[] data, int index, int length)
-        {   
+        {
             var hasher = new Sha512();
             hasher.Update(data, index, length);
             return hasher.Finalize();
@@ -136,7 +135,7 @@ namespace NearClientUnity.Utilities.Ed25519
         /// Sequence length
         /// </param>
         public void Update(byte[] data, int index, int length)
-        {   
+        {
             Array16<ulong> block;
             var bytesInBuffer = (int)_totalBytes & (BlockSize - 1);
             _totalBytes += (uint)length;

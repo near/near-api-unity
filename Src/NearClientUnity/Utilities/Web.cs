@@ -34,7 +34,7 @@ namespace NearClientUnity.Utilities
                 }
                 else
                 {
-                    throw new HttpException((int) response.StatusCode, response.Content.ToString());
+                    throw new HttpException((int)response.StatusCode, response.Content.ToString());
                 }
             }
         }

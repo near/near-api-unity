@@ -9,16 +9,17 @@ namespace NearClientUnityTests.KeyStores
     public class UnencryptedFileSystemKeyStoreTests : KeyStoreTests
     {
         private readonly string _keystorePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "test-keys");
+
+        [Test]
+        public async Task AddTwoKeysToNetworkAndRetrieveThem()
+        {
+            await AddTwoKeysToNetworkAndRetrieveThem_BaseTest();
+        }
+
         [OneTimeSetUp]
         public void ClassInit()
         {
             _keyStore = new UnencryptedFileSystemKeyStore(_keystorePath);
-        }
-
-        [SetUp]
-        public void SetupBeforeEachTest()
-        {
-            SetupBeforeEachTestAync().Wait();
         }
 
         [Test]
@@ -51,10 +52,10 @@ namespace NearClientUnityTests.KeyStores
             await GetNetworksInKeystoreReturnsArrayNetworks_BaseTest();
         }
 
-        [Test]
-        public async Task AddTwoKeysToNetworkAndRetrieveThem()
+        [SetUp]
+        public void SetupBeforeEachTest()
         {
-            await AddTwoKeysToNetworkAndRetrieveThem_BaseTest();
+            SetupBeforeEachTestAync().Wait();
         }
     }
 }

@@ -158,7 +158,7 @@ namespace NearClientUnity
             }
         }
 
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, int gas, UInt128 amount)
+        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, ulong gas, UInt128 amount)
         {
             if (args == null)
             {
@@ -301,8 +301,8 @@ namespace NearClientUnity
 
             var status = await _connection.Provider.GetStatusAsync();
 
-            var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, ++_accessKey.Nonce, actions,
-                Base58.Decode(status.SyncInfo.LatestBlockHash), _connection.Signer, _accountId, _connection.NetworkId);
+            var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, (ulong)++_accessKey.Nonce, actions,
+                new ByteArray32() { Buffer = Base58.Decode(status.SyncInfo.LatestBlockHash) }, _connection.Signer, _accountId, _connection.NetworkId);
             FinalExecutionOutcome result;
 
             try

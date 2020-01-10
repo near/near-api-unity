@@ -1,7 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-
-namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Field
+﻿namespace NearClientUnity.Utilities.Ed25519.Internal.Ed25519Ref10.Field
 {
     internal struct FieldElement
     {

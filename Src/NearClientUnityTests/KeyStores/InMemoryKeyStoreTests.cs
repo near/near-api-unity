@@ -7,16 +7,16 @@ namespace NearClientUnityTests.KeyStores
     [TestFixture]
     public class InMemoryKeyStoreTests : KeyStoreTests
     {
+        [Test]
+        public async Task AddTwoKeysToNetworkAndRetrieveThem()
+        {
+            await AddTwoKeysToNetworkAndRetrieveThem_BaseTest();
+        }
+
         [OneTimeSetUp]
         public void ClassInit()
         {
             _keyStore = new InMemoryKeyStore();
-        }
-
-        [SetUp]
-        public void SetupBeforeEachTest()
-        {
-            SetupBeforeEachTestAync().Wait();
         }
 
         [Test]
@@ -49,10 +49,10 @@ namespace NearClientUnityTests.KeyStores
             await GetNetworksInKeystoreReturnsArrayNetworks_BaseTest();
         }
 
-        [Test]
-        public async Task AddTwoKeysToNetworkAndRetrieveThem()
+        [SetUp]
+        public void SetupBeforeEachTest()
         {
-            await AddTwoKeysToNetworkAndRetrieveThem_BaseTest();
+            SetupBeforeEachTestAync().Wait();
         }
     }
 }

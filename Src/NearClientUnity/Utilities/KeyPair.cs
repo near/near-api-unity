@@ -17,7 +17,7 @@ namespace NearClientUnity.Utilities
         }
 
         public static KeyPair FromString(string encodedKey)
-        {            
+        {
             var parts = encodedKey.Split(':');
             switch (parts.Length)
             {

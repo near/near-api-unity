@@ -9,14 +9,13 @@ namespace NearClientUnity.KeyStores
     {
         private KeyStore[] _keyStores;
 
-        public KeyStore[] Stores => _keyStores;
-
         public MergeKeyStore(KeyStore[] keyStores)
         {
             _keyStores = keyStores;
         }
 
         public KeyStore[] KeyStores => _keyStores;
+        public KeyStore[] Stores => _keyStores;
 
         public override async Task ClearAsync()
         {
