@@ -25,6 +25,10 @@ namespace NearClientUnity
         private bool _ready;
         private AccountState _state;
 
+        public Connection Connection => _connection;
+        public string AccountId => _accountId;
+
+
         public Account(Connection connection, string accountId)
         {
             _connection = connection;
@@ -158,7 +162,7 @@ namespace NearClientUnity
             }
         }
 
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, ulong gas, UInt128 amount)
+        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, ulong? gas, UInt128 amount)
         {
             if (args == null)
             {

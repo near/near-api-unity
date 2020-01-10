@@ -73,7 +73,7 @@ namespace NearClientUnity
             return FromRawDataStream(stream);
         }
 
-        public static Action FunctionCall(string methodName, byte[] methodArgs, ulong gas, UInt128 deposit)
+        public static Action FunctionCall(string methodName, byte[] methodArgs, ulong? gas, UInt128 deposit)
         {
             dynamic args = new ExpandoObject();
             args.MethodName = methodName;
