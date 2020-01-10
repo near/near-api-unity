@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
@@ -147,13 +148,24 @@ namespace NearClientUnity
         public async Task FetchStateAsync()
         {
             _accessKey = null;
-            _state = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
+            var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");            
+            _state = new AccountState()
+            {
+                AccountId = rawState.account_id == null ? null : rawState.account_id,
+                Staked = rawState.staked == null ? null : rawState.staked,
+                Locked = rawState.locked,
+                Amount = rawState.amount,
+                CodeHash = rawState.code_hash,
+                StoragePaidAt = rawState.storage_paid_at,
+                StorageUsage = rawState.storage_usage
+            };
             var publicKey = await _connection.Signer.GetPublicKeyAsync(_accountId, _connection.NetworkId);
             if (publicKey == null) return;
             try
             {
-                _accessKey =
+                var rawAccessKey =
                     await _connection.Provider.QueryAsync($"access_key/{_accountId}/{publicKey.ToString()}", "");
+                _accessKey = AccessKey.FromDynamicJsonObject(rawAccessKey);
             }
             catch (Exception)
             {
@@ -189,9 +201,8 @@ namespace NearClientUnity
         /// Returns array of {access_key: AccessKey, public_key: PublicKey} items.
         public async Task<dynamic> GetAccessKeysAsync()
         {
-            var response = await _connection.Provider.QueryAsync($"access_key/{_accountId}", "");
-            var result = JObject.Parse(response);
-            return result;
+            var response = await _connection.Provider.QueryAsync($"access_key/{_accountId}", "");            
+            return response;
         }
 
         public async Task<dynamic> GetAccountDetailsAsync()
@@ -240,7 +251,7 @@ namespace NearClientUnity
         {
             var response = await _connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(JsonConvert.SerializeObject(args)));
 
-            var result = JObject.Parse(response);
+            var result = response;
 
             if (result.logs != null && result.logs.GetType() is ArraySegment<string> && result.logs.Length > 0)
             {

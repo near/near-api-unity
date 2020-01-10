@@ -55,7 +55,8 @@ namespace NearClientUnity.Providers
 
         public override async Task<NodeStatusResult> GetStatusAsync()
         {
-            var result = await SendJsonRpc("status", new dynamic[0]);
+            var rawStatusResul = await SendJsonRpc("status", new dynamic[0]);
+            var result = NodeStatusResult.FromDynamicJsonObject(rawStatusResul);
             return result;
         }
 

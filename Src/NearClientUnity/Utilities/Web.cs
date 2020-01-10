@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.ComponentModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -33,10 +34,11 @@ namespace NearClientUnity.Utilities
 
                 if (response.IsSuccessStatusCode)
                 {
-                    var jsonString = await response.Content.ReadAsStringAsync();
+                    string jsonString = await response.Content.ReadAsStringAsync();
                     Console.WriteLine(">>> " + jsonString);
-                    dynamic result = JObject.Parse(jsonString);
-                    return result;
+                    dynamic rawResult = JObject.Parse(jsonString);
+                    Console.WriteLine("? " + rawResult.result);
+                    return rawResult.result;
                 }
                 else
                 {                    
@@ -45,7 +47,7 @@ namespace NearClientUnity.Utilities
             }
         }
 
-        public static async Task<string> FetchJsonAsync(ConnectionInfo connection, string json = "")
+        public static async Task<dynamic> FetchJsonAsync(ConnectionInfo connection, string json = "")
         {
             var url = connection.Url;
             var result = await FetchJsonAsync(url, json);

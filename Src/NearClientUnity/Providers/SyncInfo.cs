@@ -1,11 +1,11 @@
 ﻿namespace NearClientUnity.Providers
 {
-    public abstract class SyncInfo
+    public class SyncInfo
     {
-        public abstract string LatestBlockHash { get; set; }
-        public abstract int LatestBlockHeight { get; set; }
-        public abstract string LatestBlockTime { get; set; }
-        public abstract string LatestStateRoot { get; set; }
-        public abstract bool Syncing { get; set; }
+        public string LatestBlockHash { get; set; }
+        public int LatestBlockHeight { get; set; }
+        public string LatestBlockTime { get; set; }
+        public string LatestStateRoot { get; set; }
+        public bool Syncing { get; set; }
     }
 }

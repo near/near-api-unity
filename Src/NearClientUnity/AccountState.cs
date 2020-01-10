@@ -6,5 +6,8 @@
         public string Amount { get; set; }
         public string CodeHash { get; set; }
         public string Staked { get; set; }
+        public string Locked { get; set; }
+        public uint StoragePaidAt { get; set; }
+        public uint StorageUsage { get; set; }
     }
 }

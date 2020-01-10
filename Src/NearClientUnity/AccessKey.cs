@@ -1,4 +1,5 @@
 ﻿using NearClientUnity.Utilities;
+using System;
 using System.IO;
 
 namespace NearClientUnity
@@ -103,6 +104,23 @@ namespace NearClientUnity
                     Permission = permission
                 };
             }
+        }
+
+        public static AccessKey FromDynamicJsonObject(dynamic jsonObject)
+        {            
+            if (jsonObject.permission.Value.GetType().Name == "String" && jsonObject.permission.Value == "FullAccess")
+            {
+                return new AccessKey
+                {
+                    Nonce = jsonObject.nonce,
+                    Permission = new AccessKeyPermission
+                    {
+                        PermissionType = AccessKeyPermissionType.FullAccessPermission,
+                        FullAccess = new FullAccessPermission()
+                    }
+                };
+            }
+            return FullAccessKey();
         }
     }
 }
