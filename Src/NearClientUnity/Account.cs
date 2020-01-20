@@ -147,8 +147,11 @@ namespace NearClientUnity
 
         public async Task FetchStateAsync()
         {
-            _accessKey = null;
-            var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");            
+            _accessKey = null;            
+            var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
+            if (rawState == null) {
+                return;
+            }
             _state = new AccountState()
             {
                 AccountId = rawState.account_id == null ? null : rawState.account_id,
@@ -313,19 +316,21 @@ namespace NearClientUnity
             {
                 throw new Exception($"Can not sign transactions, no matching key pair found in Signer.");
             }
-
-            var status = await _connection.Provider.GetStatusAsync();
-
+            Console.WriteLine("result0 " + receiverId);
+            var status = await _connection.Provider.GetStatusAsync();            
             var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, (ulong)++_accessKey.Nonce, actions,
                 new ByteArray32() { Buffer = Base58.Decode(status.SyncInfo.LatestBlockHash) }, _connection.Signer, _accountId, _connection.NetworkId);
             FinalExecutionOutcome result;
 
             try
             {
+                Console.WriteLine("result1 " );
                 result = await _connection.Provider.SendTransactionAsync(signTransaction.Item2);
+                Console.WriteLine("result2 " + result);
             }
             catch (Exception e)
             {
+                Console.WriteLine("result3 " + e);
                 var parts = e.Message.Split(':');
                 if (parts.Length > 1 && parts[1] == " Request timed out.")
                 {
@@ -333,7 +338,7 @@ namespace NearClientUnity
                 }
                 else
                 {
-                    throw;
+                    throw e;
                 }
             }
 

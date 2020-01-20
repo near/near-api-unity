@@ -35,7 +35,7 @@ namespace NearClientUnityTests.Utils
         public static async Task<Account> CreateAccount(Account masterAccount, UInt128 amount, uint trial = 5)
         {
             await masterAccount.FetchStateAsync();
-            var newAccountName = GenerateUniqueString(prefix: "text");
+            var newAccountName = GenerateUniqueString(prefix: "test");
             var newPublicKey = await masterAccount.Connection.Signer.CreateKeyAsync(newAccountName, TestUtils.NetworkId);
             await masterAccount.CreateAccountAsync(newAccountName, newPublicKey, amount);
             return new Account(masterAccount.Connection, newAccountName);

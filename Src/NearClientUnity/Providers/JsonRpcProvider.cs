@@ -91,7 +91,8 @@ namespace NearClientUnity.Providers
             var bytes = signedTransaction.ToByteArray();
             var parameters = new dynamic[1];
             parameters[0] = Convert.ToBase64String(bytes, 0, bytes.Length);
-            var result = await SendJsonRpc("broadcast_tx_commit", parameters);
+            var rawOutcomeResult = await SendJsonRpc("broadcast_tx_commit", parameters);            
+            var result = FinalExecutionOutcome.FromDynamicJsonObject(rawOutcomeResult);
             return result;
         }
 
