@@ -76,9 +76,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
-    <None Include="Utils\main.wasm">
+    <EmbeddedResource Include="Utils\main.wasm">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NearClientUnity\NearClientUnity.csproj">

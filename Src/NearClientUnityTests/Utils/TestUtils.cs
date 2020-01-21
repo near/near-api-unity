@@ -51,7 +51,8 @@ namespace NearClientUnityTests.Utils
         public static async Task<ContractNear> DeployContract(Account workingAccount, string contractId, UInt128 amount)
         {
             var newPublicKey = await workingAccount.Connection.Signer.CreateKeyAsync(contractId, TestUtils.NetworkId);
-            var wasmBytes = Wasm.GetBytes();                      await workingAccount.CreateAndDeployContractAsync(contractId, newPublicKey, wasmBytes, amount);
+            var wasmBytes = Wasm.GetBytes();
+            await workingAccount.CreateAndDeployContractAsync(contractId, newPublicKey, wasmBytes, amount);
             var options = new ContractOptions()
             {
                 viewMethods = new string[] { "getValue", "getLastResult" },
