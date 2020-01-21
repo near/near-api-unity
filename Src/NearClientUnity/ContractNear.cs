@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NearClientUnity
@@ -60,7 +61,7 @@ namespace NearClientUnity
             dynamic data = new ExpandoObject();
             var logs = new List<string>();
             var result = new List<byte>();
-            foreach(var log in rawResult.logs)
+            foreach (var log in rawResult.logs)
             {
                 logs.Add((string)log);
             }
@@ -69,7 +70,7 @@ namespace NearClientUnity
                 result.Add((byte)item);
             }
             data.logs = logs.ToArray();
-            data.result = result.ToArray();
+            data.result = Encoding.UTF8.GetString(result.ToArray()).Trim('"');
             return data;
         }
     }
