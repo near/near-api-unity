@@ -8,7 +8,7 @@ namespace NearClientUnityTests.Utils
     {
         public static byte[] GetBytes()
         {
-            return File.ReadAllBytes(TestContext.CurrentContext.TestDirectory + "\\Utils\\main.wasm");
+            return File.ReadAllBytes(Directory.GetCurrentDirectory() + "/Utils/main.wasm");
         }
     }
 }

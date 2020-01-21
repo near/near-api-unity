@@ -104,16 +104,16 @@ namespace NearClientUnity.Providers
             request.parameters = parameters;
             request.id = _id++;
             request.jsonrpc = "2.0";
-
+            Console.WriteLine("SendJsonRpc 1");
             var requestString = JsonConvert.SerializeObject(request).Replace("\"parameters\":", "\"params\":");
-
+            Console.WriteLine("SendJsonRpc 2");
             try
-            {
+            {                
                 var result = await Web.FetchJsonAsync(_connection, requestString);
                 return result;
             }
             catch (HttpException e)
-            {
+            {                
                 throw new Exception($"{e.ErrorCode}: {e.Message}");
             }
         }

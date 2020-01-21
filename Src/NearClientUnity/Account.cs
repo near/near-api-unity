@@ -150,6 +150,7 @@ namespace NearClientUnity
             _accessKey = null;            
             var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
             if (rawState == null) {
+                Console.WriteLine("FetchStateAsync rawState");
                 return;
             }
             _state = new AccountState()
@@ -171,7 +172,7 @@ namespace NearClientUnity
                 _accessKey = AccessKey.FromDynamicJsonObject(rawAccessKey);
             }
             catch (Exception)
-            {
+            {                
                 throw new Exception(
                     $"Failed to fetch access key for '{_accountId}' with public key {publicKey.ToString()}");
             }
@@ -185,7 +186,8 @@ namespace NearClientUnity
             }
 
             var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
-            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, gas, amount) });
+            var gasValue = gas == null ? DefaultFuncCallAmount : gas;
+            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, gasValue, amount) });
             return result;
         }
 
@@ -252,15 +254,21 @@ namespace NearClientUnity
 
         public async Task<dynamic> ViewFunctionAsync(string contractId, string methodName, dynamic args)
         {
-            var response = await _connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(JsonConvert.SerializeObject(args)));
+            if (args == null)
+            {
+                args = new ExpandoObject();
+            }
 
+            var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
+            var response = await _connection.Provider.QueryAsync($"call/{contractId}/{methodName}", Base58.Encode(methodArgs));
+            
             var result = response;
 
             if (result.logs != null && result.logs.GetType() is ArraySegment<string> && result.logs.Length > 0)
             {
                 PrintLogs(contractId, result.logs);
             }
-
+            
             return result;
         }
 
@@ -315,9 +323,38 @@ namespace NearClientUnity
             if (!await GetReadyStatusAsync())
             {
                 throw new Exception($"Can not sign transactions, no matching key pair found in Signer.");
+            }            
+            var status = await _connection.Provider.GetStatusAsync();
+            Console.WriteLine("_accessKey " + (_accessKey == null));
+            Console.WriteLine("_accessKey :");
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(_accessKey))
+            {
+                string name = descriptor.Name;
+                object value = descriptor.GetValue(_accessKey);
+                Console.WriteLine("{0}={1}", name, value);
+            }            
+Console.WriteLine("status :");
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(status))
+            {
+                string name = descriptor.Name;
+                object value = descriptor.GetValue(status);
+                Console.WriteLine("{0}={1}", name, value);
             }
-            Console.WriteLine("result0 " + receiverId);
-            var status = await _connection.Provider.GetStatusAsync();            
+           Console.WriteLine("status.SyncInfo :");
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(status.SyncInfo))
+            {
+                string name = descriptor.Name;
+                object value = descriptor.GetValue(status.SyncInfo);
+                Console.WriteLine("{0}={1}", name, value);
+            }            
+Console.WriteLine("_connection: ");
+            foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(_connection))
+            {
+                string name = descriptor.Name;
+                object value = descriptor.GetValue(_connection);
+                Console.WriteLine("{0}={1}", name, value);
+            }
+            Console.WriteLine("");
             var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, (ulong)++_accessKey.Nonce, actions,
                 new ByteArray32() { Buffer = Base58.Decode(status.SyncInfo.LatestBlockHash) }, _connection.Signer, _accountId, _connection.NetworkId);
             FinalExecutionOutcome result;
@@ -347,7 +384,7 @@ namespace NearClientUnity
             Array.Copy(result.Receipts, 0, tempFlatLogs, 1, result.Receipts.Length);
 
             var flatLogs = new List<string>();
-
+            Console.WriteLine("result4 ");
             foreach (var t in tempFlatLogs)
             {
                 flatLogs.AddRange(t.Outcome.Logs);
@@ -356,7 +393,7 @@ namespace NearClientUnity
             PrintLogs(signTransaction.Item2.Transaction.ReceiverId, flatLogs.ToArray());
 
             // ToDo: Add typed error handling
-
+            Console.WriteLine("result is null " + (result == null));
             return result;
         }
     }

@@ -7,6 +7,7 @@ using NearClientUnity.Utilities;
 using System.Collections.Generic;
 using System.Dynamic;
 using System;
+using System.IO;
 
 namespace NearClientUnityTests
 {
@@ -20,32 +21,39 @@ namespace NearClientUnityTests
         private string _contractId;
         private ContractNear _contract;
 
-        [OneTimeSetUp]
+        
         public void ClassInit()
         {
             ClassInitAsync().Wait();
         }
 
-        protected async Task ClassInitAsync()
+        [OneTimeSetUp]
+        public async Task ClassInitAsync()
         {
+            Console.WriteLine("Start OneTimeSetUp");
             _near = await TestUtils.SetUpTestConnection();
             Console.WriteLine("Connection == null -> " + (_near.Connection == null));
             var masterAccount = await _near.AccountAsync(accountId: TestUtils.TestAccountName);
             var amount = TestUtils.InitialBalance * new UInt128(100);
             _testAccount = await TestUtils.CreateAccount(masterAccount: masterAccount, amount: amount);
+            Console.WriteLine("End OneTimeSetUp");
+            Console.WriteLine("Start SetUp");
+            _contractId = TestUtils.GenerateUniqueString(prefix: "test");
+            _workingAccount = await TestUtils.CreateAccount(masterAccount: _testAccount, amount: TestUtils.InitialBalance);
+            _contract = await TestUtils.DeployContract(_workingAccount, _contractId, new UInt128(10000000));
+            Console.WriteLine("End SetUp");
         }
 
-        [SetUp]
+        
         public void SetupBeforeEachTest()
         {
             SetupBeforeEachTestAsync().Wait();
         }
 
-        protected async Task SetupBeforeEachTestAsync()
+        [SetUp]
+        public async Task SetupBeforeEachTestAsync()
         {
-            _contractId = TestUtils.GenerateUniqueString(prefix: "test");
-            _workingAccount = await TestUtils.CreateAccount(masterAccount: _testAccount, amount: TestUtils.InitialBalance);
-            _contract = await TestUtils.DeployContract(_workingAccount, _contractId, new UInt128(10000000));
+            //
         }
 
         [Test]
@@ -66,8 +74,16 @@ namespace NearClientUnityTests
             //Dictionary<string, dynamic> changeArgs = new Dictionary<string, dynamic>();
             //changeArgs.Add("value", setCallValue);
             await _contract.Change("setValue", args, null, new UInt128(0));
-            var viewArgs = new { };
-            var testValue = await _contract.View("getValue", viewArgs);
+            var viewArgs = new ExpandoObject(); ;
+            var rawTestValue = await _contract.View("getValue", viewArgs);
+            string testValue = "";
+            using (var ms = new MemoryStream(rawTestValue.result))
+            {
+                using (var reader = new NearBinaryReader(ms))
+                {
+                    testValue = reader.ReadString();
+                }
+            }
             Assert.AreEqual(testValue, setCallValue);
         }
     }

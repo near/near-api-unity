@@ -50,7 +50,7 @@ namespace NearClientUnity.KeyStores
                     return result;
                 }
                 catch (KeyNotFoundException)
-                {
+                {                    
                     return null;
                 }
             });
