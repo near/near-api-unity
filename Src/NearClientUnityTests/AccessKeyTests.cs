@@ -4,11 +4,8 @@ using System.Threading.Tasks;
 using NearClientUnity;
 using NearClientUnityTests.Utils;
 using NearClientUnity.Utilities;
-using System.Collections.Generic;
 using System.Dynamic;
 using System;
-using System.IO;
-using System.Text;
 
 namespace NearClientUnityTests
 {
@@ -71,6 +68,28 @@ namespace NearClientUnityTests
             var viewArgs = new ExpandoObject(); ;
             var testValue = await _contract.View("getValue", viewArgs);                        
             Assert.AreEqual(testValue.result, setCallValue);
+        }
+
+        [Test]
+        public async Task ShouldRemoveAccessKeyNoLongerWorks()
+        {
+            var keypair = KeyPairEd25519.FromRandom();
+            var publicKey = keypair.GetPublicKey();
+            await _workingAccount.AddKeyAsync(publicKey.ToString(), new UInt128(400000), "", _contractId);
+            await _workingAccount.DeleteKeyAsync(publicKey: publicKey.ToString());
+            var signer = (InMemorySigner)this._near.Connection.Signer;
+            await signer.KeyStore.SetKeyAsync(TestUtils.NetworkId, _workingAccount.AccountId, keypair);
+            dynamic args = new ExpandoObject();
+            args.value = "test";
+            try
+            {
+                var changeResult = await _contract.Change("setValue", args, null, new UInt128(0));
+                Assert.Fail("should throw an error");
+            }
+            catch (Exception e)
+            {
+                Assert.Pass("pass with exception", e);
+            }           
         }
     }
 }
