@@ -126,15 +126,24 @@ namespace NearClientUnityTests
             Assert.IsTrue(real.SequenceEqual(expected));                       
         }
 
-        public static void Print(ExpandoObject dynamicObject)
+        [Test]
+        public async Task ShouldLoadingAccountAfterAddingAFullKey()
         {
-            var dynamicDictionary = dynamicObject as IDictionary<string, object>;
-
-            foreach (KeyValuePair<string, object> property in dynamicDictionary)
+            var keypair = KeyPairEd25519.FromRandom();
+            var publicKey = keypair.GetPublicKey();
+            await _workingAccount.AddKeyAsync(publicKey.ToString(), null, "", "");
+            var rawAccessKeys = await _workingAccount.GetAccessKeysAsync();
+            var accessKeys = new List<dynamic>();
+            foreach(dynamic accessKey in rawAccessKeys)
             {
-                Console.WriteLine("{0}: {1}", property.Key, property.Value.ToString());
+                accessKeys.Add(accessKey);
             }
-            Console.WriteLine();
+            Assert.That(accessKeys, Has.Exactly(2).Items);
+            var addedKey = accessKeys.First(obj => ((string)obj.public_key).Equals(publicKey.ToString()));
+            Console.WriteLine("addedKey " + addedKey);
+            Assert.IsNotNull(addedKey);
+            var permission = (string)addedKey.access_key.permission;
+            Assert.AreEqual(permission, "FullAccess");
         }
     }
 }

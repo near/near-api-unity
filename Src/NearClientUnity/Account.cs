@@ -36,7 +36,7 @@ namespace NearClientUnity
             _accountId = accountId;
         }
 
-        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128 amount,
+        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128? amount,
             string methodName = "", string contractId = "")
         {
             AccessKey accessKey;
