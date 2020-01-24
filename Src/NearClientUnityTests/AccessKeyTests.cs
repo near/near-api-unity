@@ -6,6 +6,8 @@ using NearClientUnityTests.Utils;
 using NearClientUnity.Utilities;
 using System.Dynamic;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace NearClientUnityTests
 {
@@ -90,6 +92,49 @@ namespace NearClientUnityTests
             {
                 Assert.Pass("pass with exception", e);
             }           
+        }
+
+        [Test]
+        public async Task ShouldViewAccountDetailsAfterAddingAccessKeys()
+        {
+            var keypair = KeyPairEd25519.FromRandom();
+            var publicKey = keypair.GetPublicKey();
+            await _workingAccount.AddKeyAsync(publicKey.ToString(), new UInt128(1000000000), "", _contractId);
+            var contractId2 = "test_contract2_" + (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+            var contract2 = await TestUtils.DeployContract(_workingAccount, contractId2, new UInt128(10000000));
+            var keypair2 = KeyPairEd25519.FromRandom();
+            var publicKey2 = keypair2.GetPublicKey();
+            await _workingAccount.AddKeyAsync(publicKey2.ToString(), new UInt128(2000000000), "", contractId2);
+            var details = await _workingAccount.GetAccountDetailsAsync();
+
+            var expectedResult = new List<dynamic>();
+            dynamic authorizedApp1 = new ExpandoObject();
+            authorizedApp1.ContractId = _contractId;
+            authorizedApp1.Amount = new UInt128(1000000000);
+            authorizedApp1.PublicKey = publicKey.ToString();
+            expectedResult.Add(authorizedApp1);
+
+            dynamic authorizedApp2 = new ExpandoObject();
+            authorizedApp2.ContractId = contractId2;
+            authorizedApp2.Amount = new UInt128(2000000000);
+            authorizedApp2.PublicKey = publicKey2.ToString();
+            expectedResult.Add(authorizedApp2);
+
+            IEnumerable<string> expected = expectedResult.Select(x => ((object)x.ContractId).ToString()).ToList().OrderBy(s => s);
+            dynamic[] apps = details.AuthorizedApps;            
+            IEnumerable<string> real = apps.Select(x => ((object)x.ContractId).ToString()).ToList().OrderBy(s => s);           
+            Assert.IsTrue(real.SequenceEqual(expected));                       
+        }
+
+        public static void Print(ExpandoObject dynamicObject)
+        {
+            var dynamicDictionary = dynamicObject as IDictionary<string, object>;
+
+            foreach (KeyValuePair<string, object> property in dynamicDictionary)
+            {
+                Console.WriteLine("{0}: {1}", property.Key, property.Value.ToString());
+            }
+            Console.WriteLine();
         }
     }
 }
