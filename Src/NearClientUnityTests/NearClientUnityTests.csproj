@@ -73,6 +73,7 @@
     <Compile Include="Utils\TestUtils.cs" />
     <Compile Include="Utils\EnvironmentConfig.cs" />
     <Compile Include="Utils\Wasm.cs" />
+    <Compile Include="SignerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

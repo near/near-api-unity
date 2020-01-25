@@ -38,9 +38,24 @@ namespace NearClientUnity
             var keyPair = await _keyStore.GetKeyAsync(networkId, accountId);
             if (keyPair == null)
             {
-                throw new Exception($"Key for { accountId} not found in { networkId}");
+                throw new InMemorySignerException($"Key for { accountId} not found in { networkId}");
             }
             return keyPair.Sign(hash);
         }
+    }
+
+    public class InMemorySignerException : Exception
+    {
+        public InMemorySignerException()
+        {
+
+        }
+
+        public InMemorySignerException(string name)
+            : base(name)
+        {
+
+        }
+
     }
 }
