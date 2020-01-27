@@ -67,7 +67,7 @@ namespace NearClientUnityTests
             dynamic args = new ExpandoObject();
             args.value = setCallValue;            
             await _contract.Change("setValue", args, null, new UInt128(0));
-            var viewArgs = new ExpandoObject(); ;
+            var viewArgs = new ExpandoObject();
             var testValue = await _contract.View("getValue", viewArgs);                        
             Assert.AreEqual(testValue.result, setCallValue);
         }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using NearClientUnity;
+﻿using NearClientUnity;
 using NearClientUnity.KeyStores;
 using NearClientUnity.Utilities;
 using NUnit.Framework;

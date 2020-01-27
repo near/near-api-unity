@@ -11,16 +11,19 @@ namespace NearClientUnity.Providers
         {
             if (txResult.Status == null || txResult.Status.GetType() != typeof(FinalExecutionStatus) || string.Equals(
                     txResult.Status.SuccessValue, null, StringComparison.Ordinal)) return null;
-            var value = Convert.FromBase64String(txResult.Status.SuccessValue).ToString();
-
+            Console.WriteLine("GetTransactionLastResult " + txResult.Status.SuccessValue);
+            var valueBytes = Convert.FromBase64String(txResult.Status.SuccessValue);
+            string valueString = System.Text.Encoding.UTF8.GetString(valueBytes).Trim('"');
             try
             {
-                var result = JObject.Parse(value);
+                var result = JObject.Parse(valueString);
+                Console.WriteLine("GetTransactionLastResult value " + valueString + "/ result " + result);
                 return result;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return value;
+                Console.WriteLine("GetTransactionLastResult exception " + ex + " value " + valueString);
+                return valueString;
             }
         }
 
