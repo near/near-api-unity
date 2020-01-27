@@ -1,7 +1,6 @@
 ﻿using NearClientUnity.Providers;
 using NearClientUnity.Utilities;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +15,7 @@ namespace NearClientUnity
         // Default amount of tokens to be send with the function calls. Used to pay for the fees
         // incurred while running the contract execution. The unused amount will be refunded back to
         // the originator.
-        private const int DefaultFuncCallAmount = 2000000;
+        public const int DefaultFuncCallAmount = 2000000;
 
         private const int TxStatusRetryNumber = 10;
         private const int TxStatusRetryWait = 500;
@@ -150,7 +149,7 @@ namespace NearClientUnity
             _accessKey = null;            
             var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
             if (rawState == null) {
-                Console.WriteLine("FetchStateAsync rawState");
+                //Console.WriteLine("FetchStateAsync rawState");
                 return;
             }
             _state = new AccountState()
@@ -178,7 +177,7 @@ namespace NearClientUnity
             }
         }
 
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, ulong? gas, UInt128 amount)
+        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, ulong? gas = null, Nullable<UInt128> amount = null)
         {
             if (args == null)
             {
@@ -186,20 +185,9 @@ namespace NearClientUnity
             }
 
             var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
-            var gasValue = gas == null ? DefaultFuncCallAmount : gas;
-            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, gasValue, amount) });
-            return result;
-        }
-
-        public async Task<FinalExecutionOutcome> FunctionCallAsync(string contractId, string methodName, dynamic args, UInt128 amount)
-        {
-            if (args == null)
-            {
-                args = new ExpandoObject();
-            }
-
-            var methodArgs = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(args));
-            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, DefaultFuncCallAmount, amount) });
+            var gasValue = gas ?? DefaultFuncCallAmount;
+            var amountValue = amount ?? DefaultFuncCallAmount;
+            var result = await SignAndSendTransactionAsync(contractId, new Action[] { Action.FunctionCall(methodName, methodArgs, gasValue, amountValue) });
             return result;
         }
 
@@ -325,49 +313,49 @@ namespace NearClientUnity
                 throw new Exception($"Can not sign transactions, no matching key pair found in Signer.");
             }            
             var status = await _connection.Provider.GetStatusAsync();
-            Console.WriteLine("_accessKey " + (_accessKey == null));
-            Console.WriteLine("_accessKey :");
+            //Console.WriteLine("_accessKey " + (_accessKey == null));
+            //Console.WriteLine("_accessKey :");
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(_accessKey))
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(_accessKey);
-                Console.WriteLine("{0}={1}", name, value);
+                //Console.WriteLine("{0}={1}", name, value);
             }            
-Console.WriteLine("status :");
+//Console.WriteLine("status :");
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(status))
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(status);
-                Console.WriteLine("{0}={1}", name, value);
+                //Console.WriteLine("{0}={1}", name, value);
             }
-           Console.WriteLine("status.SyncInfo :");
+           //Console.WriteLine("status.SyncInfo :");
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(status.SyncInfo))
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(status.SyncInfo);
-                Console.WriteLine("{0}={1}", name, value);
+                //Console.WriteLine("{0}={1}", name, value);
             }            
-Console.WriteLine("_connection: ");
+//Console.WriteLine("_connection: ");
             foreach (PropertyDescriptor descriptor in TypeDescriptor.GetProperties(_connection))
             {
                 string name = descriptor.Name;
                 object value = descriptor.GetValue(_connection);
-                Console.WriteLine("{0}={1}", name, value);
+                //Console.WriteLine("{0}={1}", name, value);
             }
-            Console.WriteLine("");
+            //Console.WriteLine("");
             var signTransaction = await SignedTransaction.SignTransactionAsync(receiverId, (ulong)++_accessKey.Nonce, actions,
                 new ByteArray32() { Buffer = Base58.Decode(status.SyncInfo.LatestBlockHash) }, _connection.Signer, _accountId, _connection.NetworkId);
             FinalExecutionOutcome result;
 
             try
             {
-                Console.WriteLine("result1 " );
-                result = await _connection.Provider.SendTransactionAsync(signTransaction.Item2);
-                Console.WriteLine("result2 " + result);
+                //Console.WriteLine("result1 " );
+                result = await _connection.Provider.SendTransactionAsync(signTransaction.Item2);                
+                //Console.WriteLine("result2 " + result);
             }
             catch (Exception e)
             {
-                Console.WriteLine("result3 " + e);
+                //Console.WriteLine("result3 " + e);
                 var parts = e.Message.Split(':');
                 if (parts.Length > 1 && parts[1] == " Request timed out.")
                 {
@@ -384,7 +372,7 @@ Console.WriteLine("_connection: ");
             Array.Copy(result.Receipts, 0, tempFlatLogs, 1, result.Receipts.Length);
 
             var flatLogs = new List<string>();
-            Console.WriteLine("result4 ");
+            //Console.WriteLine("result4 ");
             foreach (var t in tempFlatLogs)
             {
                 flatLogs.AddRange(t.Outcome.Logs);
@@ -392,8 +380,13 @@ Console.WriteLine("_connection: ");
 
             PrintLogs(signTransaction.Item2.Transaction.ReceiverId, flatLogs.ToArray());
 
+            if (result.Status.Failure != null)
+            {
+                throw new Exception($"Transaction {result.Transaction.Id} failed. {result.Status.Failure.ErrorMessage ?? ""}");
+            }
+
             // ToDo: Add typed error handling
-            Console.WriteLine("result is null " + (result == null));
+            //Console.WriteLine("result is null " + (result == null));
             return result;
         }
     }

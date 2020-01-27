@@ -61,6 +61,7 @@
     <Reference Include="System.Numerics" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountWithDeployContractTests.cs" />
     <Compile Include="KeyStores\InMemoryKeyStoreTests.cs" />
     <Compile Include="KeyStores\MergeKeyStoreTests.cs" />
     <Compile Include="KeyStores\UnencryptedFileSystemKeyStoreTests.cs" />

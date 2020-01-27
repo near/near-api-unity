@@ -10,7 +10,7 @@
             var isFailure = jsonObject.Failure != null;
             if (isFailure)
             {
-                new FinalExecutionStatus()
+                return new FinalExecutionStatus()
                 {
                     Failure = ExecutionError.FromDynamicJsonObject(jsonObject.Failure),                    
                 };

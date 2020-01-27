@@ -23,21 +23,22 @@ namespace NearClientUnity.Utilities
                 {
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    Console.WriteLine(url + " -> " + json);
+                    //Console.WriteLine(url + " -> " + json);
                     response = client.PostAsync(url, content).Result;
                 }
                 else
                 {
-                    Console.WriteLine(url);
+                    //Console.WriteLine(url);
                     response = await client.GetAsync(url);
                 }
 
                 if (response.IsSuccessStatusCode)
                 {
+                    //Console.WriteLine("!!!!BBBBB" + ((int)response.StatusCode).ToString() + await response.Content.ReadAsStringAsync());
                     string jsonString = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(">>> " + jsonString);
+                    //Console.WriteLine(">>> " + jsonString);
                     dynamic rawResult = JObject.Parse(jsonString);
-                    Console.WriteLine("? " + rawResult.result);
+                    //Console.WriteLine("? " + rawResult.result);
                     return rawResult.result;
                 }
                 else
