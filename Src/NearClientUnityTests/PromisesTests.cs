@@ -17,6 +17,12 @@ namespace NearClientUnityTests
         public string n;
         public RSResult[] rs;
 
+        public Result(string n, RSResult[] rs)
+        {
+            this.n = n;
+            this.rs = rs;
+        }
+
         public bool Equals(Result other)
         {
             IEnumerable<RSResult> except = rs.Except(other.rs);
@@ -93,6 +99,7 @@ namespace NearClientUnityTests
             dynamic viewParam = new ExpandoObject();
             string rawLastResult = (await _contract1.View("getLastResult", viewParam)).result;
             var lastResult = JsonConvert.DeserializeObject<Result>(rawLastResult);
+            Assert.AreEqual(lastResult, new Result(n: _contractName1, rs: new RSResult[0])) ;
             Assert.AreEqual(realResult, lastResult);
         }
     }
