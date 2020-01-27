@@ -59,6 +59,12 @@
       <HintPath>..\packages\Microsoft.CodeCoverage.16.4.0\lib\net45\Microsoft.VisualStudio.CodeCoverage.Shim.dll</HintPath>
     </Reference>
     <Reference Include="System.Numerics" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AccountWithDeployContractTests.cs" />
@@ -74,6 +80,8 @@
     <Compile Include="Utils\TestUtils.cs" />
     <Compile Include="Utils\EnvironmentConfig.cs" />
     <Compile Include="Utils\Wasm.cs" />
+    <Compile Include="SignerTests.cs" />
+    <Compile Include="PromisesTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

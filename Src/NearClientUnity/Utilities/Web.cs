@@ -32,7 +32,13 @@ namespace NearClientUnity.Utilities
                     response = await client.GetAsync(url);
                 }
 
-                if (response.IsSuccessStatusCode)
+                string jsonString = await response.Content.ReadAsStringAsync();
+                Console.WriteLine("jsonString >>> " + jsonString);
+                dynamic rawResult = JObject.Parse(jsonString);
+                dynamic result = rawResult.result;
+                dynamic error = rawResult.error;                
+
+                if (response.IsSuccessStatusCode && result != null)
                 {
                     //Console.WriteLine("!!!!BBBBB" + ((int)response.StatusCode).ToString() + await response.Content.ReadAsStringAsync());
                     string jsonString = await response.Content.ReadAsStringAsync();

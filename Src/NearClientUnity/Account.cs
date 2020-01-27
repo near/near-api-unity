@@ -35,7 +35,7 @@ namespace NearClientUnity
             _accountId = accountId;
         }
 
-        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128 amount,
+        public async Task<FinalExecutionOutcome> AddKeyAsync(string publicKey, UInt128? amount,
             string methodName = "", string contractId = "")
         {
             AccessKey accessKey;
@@ -202,13 +202,15 @@ namespace NearClientUnity
         {
             // TODO: update the response value to return all the different keys, not just app keys.
             // Also if we need this function, or getAccessKeys is good enough.
-            var accessKeys = await GetAccessKeysAsync() as List<dynamic>;
+            var accessKeys = await GetAccessKeysAsync();
             dynamic result = new ExpandoObject();
             var authorizedApps = new List<dynamic>();
-
+            
             foreach (var key in accessKeys)
-            {
-                if (key.access_key.permission.FunctionCall == null) continue;
+            {                
+                var rawPermission = key.access_key.permission;
+                var isFullAccess = rawPermission.GetType().Name == "JValue" && rawPermission.Value.GetType().Name == "String" && key.access_key.permission.Value == "FullAccess";
+                if (isFullAccess) continue;
                 var perm = key.access_key.permission.FunctionCall;
                 dynamic authorizedApp = new ExpandoObject();
                 authorizedApp.ContractId = perm.receiver_id;
