@@ -30,21 +30,19 @@ namespace NearClientUnity.Utilities
                 {
                     //Console.WriteLine(url);
                     response = await client.GetAsync(url);
-                }
-
-                string jsonString = await response.Content.ReadAsStringAsync();
-                Console.WriteLine("jsonString >>> " + jsonString);
-                dynamic rawResult = JObject.Parse(jsonString);
-                dynamic result = rawResult.result;
-                dynamic error = rawResult.error;                
-
-                if (response.IsSuccessStatusCode && result != null)
-                {
-                    //Console.WriteLine("!!!!BBBBB" + ((int)response.StatusCode).ToString() + await response.Content.ReadAsStringAsync());
+                }                                
+              
+                if (response.IsSuccessStatusCode)
+                {                    
                     string jsonString = await response.Content.ReadAsStringAsync();
-                    //Console.WriteLine(">>> " + jsonString);
+                    
                     dynamic rawResult = JObject.Parse(jsonString);
-                    //Console.WriteLine("? " + rawResult.result);
+
+                    if(rawResult.error != null && rawResult.error.data != null)
+                    {
+                        throw new Exception($"[{rawResult.error.code}]: {rawResult.error.data.error_type}: {rawResult.error.data.error_message}");
+                    }
+                    
                     return rawResult.result;
                 }
                 else

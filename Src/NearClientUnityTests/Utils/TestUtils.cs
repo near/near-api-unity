@@ -2,6 +2,8 @@
 using NearClientUnity.KeyStores;
 using NearClientUnity.Utilities;
 using System;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace NearClientUnityTests.Utils
@@ -43,9 +45,22 @@ namespace NearClientUnityTests.Utils
 
         public static string GenerateUniqueString(string prefix)
         {
-            var timestamp = (ulong)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalMilliseconds * 1000);
-            var randomInt = new Random().Next(0, 1000);            
-            return prefix + timestamp + randomInt;            
+            int length = 20;
+            const string valid = "1234567890";
+            StringBuilder res = new StringBuilder();
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                byte[] uintBuffer = new byte[sizeof(uint)];
+
+                while (length-- > 0 )
+                {
+                    rng.GetBytes(uintBuffer);
+                    uint num = BitConverter.ToUInt32(uintBuffer, 0);
+                    res.Append(valid[(int)(num % (uint)valid.Length)]);
+                }
+            }
+
+            return $"{prefix}{res.ToString()}";
         }
 
         public static async Task<ContractNear> DeployContract(Account workingAccount, string contractId, UInt128 amount)

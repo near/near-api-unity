@@ -382,7 +382,7 @@ namespace NearClientUnity
 
             PrintLogs(signTransaction.Item2.Transaction.ReceiverId, flatLogs.ToArray());
 
-            if (result.Status.Failure != null)
+            if (result.Status != null && result.Status.Failure != null)
             {
                 throw new Exception($"Transaction {result.Transaction.Id} failed. {result.Status.Failure.ErrorMessage ?? ""}");
             }

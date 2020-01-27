@@ -52,9 +52,9 @@ namespace NearClientUnityTests
     {
         private Near _near;
         private Account _workingAccount;
-        private string _contractName = TestUtils.GenerateUniqueString("cnt");
-        private string _contractName1 = TestUtils.GenerateUniqueString("cnt");
-        private string _contractName2 = TestUtils.GenerateUniqueString("cnt");
+        private string _contractName;
+        private string _contractName1;
+        private string _contractName2;        
         private ContractNear _contract;
         private ContractNear _contract1;
         private ContractNear _contract2;
@@ -81,6 +81,9 @@ namespace NearClientUnityTests
         [SetUp]
         public async Task SetupBeforeEachTestAsync()
         {
+            _contractName = TestUtils.GenerateUniqueString("cnt");
+            _contractName1 = TestUtils.GenerateUniqueString("cnt");
+            _contractName2 = TestUtils.GenerateUniqueString("cnt");
             _contract = await TestUtils.DeployContract(_workingAccount, _contractName, new UInt128(10000000));
             _contract1 = await TestUtils.DeployContract(_workingAccount, _contractName1, new UInt128(10000000));
             _contract2 = await TestUtils.DeployContract(_workingAccount, _contractName2, new UInt128(10000000));
@@ -90,6 +93,7 @@ namespace NearClientUnityTests
         [Test]
         public async Task ShouldPassTestSinglePromiseNoCallback()
         {
+            Console.WriteLine("!!!!!" + (_contractName == _contractName1 && _contractName1 == _contractName2).ToString());
             dynamic changeParam = new ExpandoObject();
             changeParam.receiver = _contractName1;
             changeParam.methodName = "callbackWithName";

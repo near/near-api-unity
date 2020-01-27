@@ -27,14 +27,14 @@ namespace NearClientUnity.Providers
 
             try
             {
-                var result = JObject.Parse(valueString);
-                Console.WriteLine("GetTransactionLastResult value " + valueString + "/ result " + result);
+                var result = JObject.Parse(value);
+                //Console.WriteLine("GetTransactionLastResult value " + value + "/ result " + result);
                 return result;
             }
             catch (Exception ex)
             {
-                Console.WriteLine("GetTransactionLastResult exception " + ex + " value " + valueString);
-                return valueString;
+                //Console.WriteLine("GetTransactionLastResult exception " + ex + " value " + value);
+                return value;
             }
         }
 
