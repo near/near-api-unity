@@ -23,7 +23,7 @@ namespace NearClientUnity
         private dynamic _authData = new ExpandoObject();
         private string _networkId;
         private IExternalAuthService _authService;
-        private AppSettingsSection _nearLocalStorage;
+        public AppSettingsSection _nearLocalStorage;
 
         public WalletAccount(Near near, string appKeyPrefix, IExternalAuthService authService)
         {
@@ -39,8 +39,15 @@ namespace NearClientUnity
             ExeConfigurationFileMap map = new ExeConfigurationFileMap();
             map.ExeConfigFilename = Assembly.GetExecutingAssembly().Location + ".config";
             Configuration libConfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-            _nearLocalStorage = (libConfig.GetSection("nearSettings") as AppSettingsSection);
-            _authData.AccountId = _nearLocalStorage.Settings[_authDataKey].Value ?? "";            
+            _nearLocalStorage = (libConfig.GetSection("appSettings") as AppSettingsSection);
+            if(_nearLocalStorage.Settings.Count > 0)
+            {
+                _authData.AccountId = _nearLocalStorage.Settings[_authDataKey].Value ?? null;
+            }
+            else
+            {
+                _authData.AccountId = null;
+            }                        
         }
 
         public bool IsSignedIn()

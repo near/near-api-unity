@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using NearClientUnity;
 using NearClientUnity.KeyStores;
@@ -6,6 +7,18 @@ using NUnit.Framework;
 
 namespace NearClientUnityTests
 {
+
+    public class MockAuthService : IExternalAuthService
+    {
+        private List<string> urls;
+
+        public bool OpenUrl(string url)
+        {
+            urls.Add(url);
+            return true;
+        }
+    }
+
     [TestFixture]
     public class WalletAccountTests
     {
@@ -14,7 +27,8 @@ namespace NearClientUnityTests
         private KeyStore _keyStore;
         private const string _walletUrl = "http://example.com/wallet";
         private Near _nearFake;
-        private string _contractName2;       
+        private string _contractName2;
+        private IExternalAuthService _authService;
 
         public void SetupBeforeEachTest()
         {
@@ -34,18 +48,22 @@ namespace NearClientUnityTests
                 KeyStore = _keyStore,
                 ContractName = "contractId",
                 WalletUrl = _walletUrl
-            });            
+            });
+            _authService = new MockAuthService();
+            _walletAccount = new WalletAccount(_nearFake, "", _authService);
         }
-
-        public void SetupAfterEachTest()
-        {
-            SetupAfterEachTestAsync().Wait();
-        }
-
+               
         [TearDown]
-        public async Task SetupAfterEachTestAsync()
+        public void SetupAfterEachTestAsync()
         {
+            //_walletAccount._nearLocalStorage.Settings.Clear();
+        }
 
+        //not signed in by default
+        [Test]
+        public void NotSignedInByDefault()
+        {
+            Assert.IsFalse(_walletAccount.IsSignedIn());
         }
     }
 }
