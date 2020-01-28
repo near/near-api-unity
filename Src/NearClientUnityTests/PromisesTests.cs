@@ -92,8 +92,7 @@ namespace NearClientUnityTests
         //it should pass test single promise, no callback (A->B)
         [Test]
         public async Task ShouldPassTestSinglePromiseNoCallback()
-        {
-            Console.WriteLine("!!!!!" + (_contractName == _contractName1 && _contractName1 == _contractName2).ToString());
+        {            
             dynamic changeParam = new ExpandoObject();
             changeParam.receiver = _contractName1;
             changeParam.methodName = "callbackWithName";
@@ -137,6 +136,79 @@ namespace NearClientUnityTests
             var lastResult = JsonConvert.DeserializeObject<Result>(rawLastResult);
             Console.WriteLine("lastResult" + lastResult);
             Assert.AreEqual(lastResult, new Result(n: _contractName, rs: new RSResult[1] { new RSResult(ok: true, r: lastResult1) }));
+            Assert.AreEqual(realResult, lastResult);
+        }
+
+        //it should pass test two promises, no callbacks (A->B->C)
+        [Test]
+        public async Task ShouldPassTestTwoPromisesNoCallbacks()
+        {
+            dynamic callPromiseParam = new ExpandoObject();
+            callPromiseParam.receiver = _contractName2;
+            callPromiseParam.methodName = "callbackWithName";
+            callPromiseParam.gas = 400000;
+            callPromiseParam.balance = 0;
+            callPromiseParam.callbackBalance = 0;
+            callPromiseParam.callbackGas = 200000;
+            dynamic args = new ExpandoObject();
+            args.receiver = _contractName1;
+            args.methodName = "callPromise";
+            args.args = callPromiseParam;
+            args.gas = 600000;
+            args.balance = 0;
+            args.callbackBalance = 0;
+            args.callbackGas = 600000;            
+            var rawRealResult = await _contract.Change("callPromise", args, null, new UInt128(0));
+            var realResult = rawRealResult.ToObject<Result>();
+            dynamic viewParam = new ExpandoObject();
+            string rawLastResult2 = (await _contract2.View("getLastResult", viewParam)).result;
+            var lastResult2 = JsonConvert.DeserializeObject<Result>(rawLastResult2);
+            Assert.AreEqual(lastResult2, new Result(n: _contractName2, rs: new RSResult[0]));            
+            Assert.AreEqual(realResult, lastResult2);
+        }
+
+        //it should pass test two promises, with two callbacks (A->B->C=>B=>A)
+        [Test]
+        public async Task ShouldPassTestTwoPromisesWithTwoCallbacks()
+        {
+            dynamic callPromise2Param = new ExpandoObject();
+            callPromise2Param.receiver = _contractName2;
+            callPromise2Param.methodName = "callbackWithName";
+            callPromise2Param.gas = 400000;
+            callPromise2Param.balance = 0;
+            callPromise2Param.callback = "callbackWithName";
+            callPromise2Param.callbackBalance = 0;
+            callPromise2Param.callbackGas = 200000;
+
+            dynamic callPromise1Param = new ExpandoObject();
+            callPromise1Param.receiver = _contractName1;
+            callPromise1Param.methodName = "callPromise";
+            callPromise1Param.args = callPromise2Param;
+            callPromise1Param.gas = 1000000;
+            callPromise1Param.balance = 0;
+            callPromise1Param.callback = "callbackWithName";
+            callPromise1Param.callbackBalance = 0;
+            callPromise1Param.callbackGas = 300000;
+
+            dynamic changeArgs = new ExpandoObject();
+            changeArgs.args = callPromise1Param;            
+
+            var rawRealResult = await _contract.Change("callPromise", changeArgs, null, new UInt128(0));
+            var realResult = rawRealResult.ToObject<Result>();
+
+            dynamic viewParam = new ExpandoObject();
+            string rawLastResult2 = (await _contract2.View("getLastResult", viewParam)).result;
+            var lastResult2 = JsonConvert.DeserializeObject<Result>(rawLastResult2);
+            Assert.AreEqual(lastResult2, new Result(n: _contractName2, rs: new RSResult[0]));
+
+            string rawLastResult1 = (await _contract1.View("getLastResult", viewParam)).result;
+            var lastResult1 = JsonConvert.DeserializeObject<Result>(rawLastResult1);
+            Assert.AreEqual(lastResult1, new Result(n: _contractName1, rs: new RSResult[1] { new RSResult(ok: true, r: lastResult2) }));
+
+            string rawLastResult = (await _contract.View("getLastResult", viewParam)).result;
+            var lastResult = JsonConvert.DeserializeObject<Result>(rawLastResult);
+            Assert.AreEqual(lastResult, new Result(n: _contractName, rs: new RSResult[1] { new RSResult(ok: true, r: lastResult1) }));
+
             Assert.AreEqual(realResult, lastResult);
         }
     }
