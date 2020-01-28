@@ -35,7 +35,8 @@ namespace NearClientUnity.Utilities
                 if (response.IsSuccessStatusCode)
                 {                    
                     string jsonString = await response.Content.ReadAsStringAsync();
-                    
+                    //Console.WriteLine("jsonString -> " + jsonString);
+
                     dynamic rawResult = JObject.Parse(jsonString);
 
                     if(rawResult.error != null && rawResult.error.data != null)

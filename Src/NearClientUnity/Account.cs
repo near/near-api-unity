@@ -146,24 +146,35 @@ namespace NearClientUnity
 
         public async Task FetchStateAsync()
         {
-            _accessKey = null;            
-            var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
-            if (rawState == null) {
-                //Console.WriteLine("FetchStateAsync rawState");
-                return;
-            }
-            _state = new AccountState()
+            _accessKey = null; 
+
+            try
             {
-                AccountId = rawState.account_id == null ? null : rawState.account_id,
-                Staked = rawState.staked == null ? null : rawState.staked,
-                Locked = rawState.locked,
-                Amount = rawState.amount,
-                CodeHash = rawState.code_hash,
-                StoragePaidAt = rawState.storage_paid_at,
-                StorageUsage = rawState.storage_usage
-            };
+                var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
+                if (rawState == null)
+                {
+                    //Console.WriteLine("FetchStateAsync rawState");
+                    return;
+                }
+                _state = new AccountState()
+                {
+                    AccountId = rawState.account_id == null ? null : rawState.account_id,
+                    Staked = rawState.staked == null ? null : rawState.staked,
+                    Locked = rawState.locked,
+                    Amount = rawState.amount,
+                    CodeHash = rawState.code_hash,
+                    StoragePaidAt = rawState.storage_paid_at,
+                    StorageUsage = rawState.storage_usage
+                };
+            }
+            catch(Exception)
+            {
+                throw new Exception($"Failed to fetch state for '{_accountId}'");
+            }
+            
             var publicKey = await _connection.Signer.GetPublicKeyAsync(_accountId, _connection.NetworkId);
             if (publicKey == null) return;
+
             try
             {
                 var rawAccessKey =
@@ -270,9 +281,10 @@ namespace NearClientUnity
                 await FetchStateAsync();
                 _ready = true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 _ready = false;
+                throw e;
             }
 
             return _ready;
@@ -390,6 +402,12 @@ namespace NearClientUnity
             // ToDo: Add typed error handling
             //Console.WriteLine("result is null " + (result == null));
             return result;
+        }
+
+        public async Task<AccountState> GetStateAsync()
+        {
+            await GetReadyStatusAsync();
+            return _state;
         }
     }
 }

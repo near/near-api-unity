@@ -1,4 +1,7 @@
-﻿namespace NearClientUnity.Providers
+﻿using System;
+using System.ComponentModel;
+
+namespace NearClientUnity.Providers
 {
     public class ExecutionStatus
     {
@@ -8,14 +11,21 @@
 
         public static ExecutionStatus FromDynamicJsonObject(dynamic jsonObject)
         {
+            if(jsonObject.ToString() == "Unknown")
+            {
+                return new ExecutionStatus();
+            }
+
             var isFailure = jsonObject.Failure != null;
+            
             if (isFailure)
             {
-               return new ExecutionStatus()
+                return new ExecutionStatus()
                 {
-                    Failure = ExecutionError.FromDynamicJsonObject(jsonObject.Failure),                    
+                    Failure = ExecutionError.FromDynamicJsonObject(jsonObject.Failure),
                 };
-            }            
+            }
+            
             return new ExecutionStatus()
             {
                 SuccessReceiptId = jsonObject.SuccessReceiptId,

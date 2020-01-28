@@ -28,7 +28,10 @@ namespace NearClientUnityTests
             content.Append(value);
             if (value == '\n')
             {
-                var result = content.ToString().Replace("\r\n", string.Empty);                
+                // for Windows
+                var result = content.ToString().Replace("\r\n", string.Empty);
+                // for other OS
+                result = result.Replace("\n", string.Empty);
                 _logs.Add(result);
                 content = new StringBuilder();
             }

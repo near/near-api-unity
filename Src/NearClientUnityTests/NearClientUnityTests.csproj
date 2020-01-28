@@ -67,6 +67,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccountTests.cs" />
     <Compile Include="AccountWithDeployContractTests.cs" />
     <Compile Include="KeyStores\InMemoryKeyStoreTests.cs" />
     <Compile Include="KeyStores\MergeKeyStoreTests.cs" />
