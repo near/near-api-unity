@@ -211,5 +211,46 @@ namespace NearClientUnityTests
 
             Assert.AreEqual(realResult, lastResult);
         }
+
+        //it should pass test cross contract call with callbacks (A->B->A=>B=>A)
+        [Test]
+        public async Task ShouldPassTestCrossContractWithCallbacks()
+        {
+            dynamic callPromiseParam = new ExpandoObject();
+            callPromiseParam.receiver = _contractName;
+            callPromiseParam.methodName = "callbackWithName";
+            callPromiseParam.gas = 400000;
+            callPromiseParam.balance = 0;
+            callPromiseParam.callback = "callbackWithName";
+            callPromiseParam.callbackBalance = 0;
+            callPromiseParam.callbackGas = 400000;
+
+            dynamic callPromise1Param = new ExpandoObject();
+            callPromise1Param.receiver = _contractName1;
+            callPromise1Param.methodName = "callPromise";
+            callPromise1Param.args = callPromiseParam;
+            callPromise1Param.gas = 1000000;
+            callPromise1Param.balance = 0;
+            callPromise1Param.callback = "callbackWithName";
+            callPromise1Param.callbackBalance = 0;
+            callPromise1Param.callbackGas = 300000;
+
+            dynamic changeArgs = new ExpandoObject();
+            changeArgs.args = callPromise1Param;
+
+            var rawRealResult = await _contract.Change("callPromise", changeArgs, null, new UInt128(0));
+            var realResult = rawRealResult.ToObject<Result>();
+
+            dynamic viewParam = new ExpandoObject();
+            string rawLastResult1 = (await _contract1.View("getLastResult", viewParam)).result;
+            var lastResult1 = JsonConvert.DeserializeObject<Result>(rawLastResult1);
+            Assert.AreEqual(lastResult1, new Result(n: _contractName1, rs: new RSResult[1] { new RSResult(ok: true, r: new Result(n: _contractName, rs: new RSResult[0]))}));
+
+            string rawLastResult = (await _contract.View("getLastResult", viewParam)).result;
+            var lastResult = JsonConvert.DeserializeObject<Result>(rawLastResult);
+            Assert.AreEqual(lastResult, new Result(n: _contractName, rs: new RSResult[1] { new RSResult(ok: true, r: lastResult1) }));
+
+            Assert.AreEqual(realResult, lastResult);
+        }
     }
 }
