@@ -83,6 +83,7 @@
     <Compile Include="Utils\Wasm.cs" />
     <Compile Include="SignerTests.cs" />
     <Compile Include="PromisesTests.cs" />
+    <Compile Include="WalletAccountTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

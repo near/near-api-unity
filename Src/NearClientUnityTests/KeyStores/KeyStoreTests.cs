@@ -1,5 +1,6 @@
 ﻿using NearClientUnity.Utilities;
 using NUnit.Framework;
+using System;
 using System.Threading.Tasks;
 
 namespace NearClientUnityTests.KeyStores
@@ -27,6 +28,8 @@ namespace NearClientUnityTests.KeyStores
 
             var actualAccountIds = await _keyStore.GetAccountsAsync(networkId);
             var expectedAccountIds = new[] { accountId1, accountId2 };
+            Array.Sort(expectedAccountIds);
+            Array.Sort(actualAccountIds);
             Assert.AreEqual(expectedAccountIds, actualAccountIds);
 
             var actualNetworks = await _keyStore.GetNetworksAsync();
