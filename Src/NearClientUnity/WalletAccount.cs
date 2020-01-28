@@ -23,7 +23,8 @@ namespace NearClientUnity
         private dynamic _authData = new ExpandoObject();
         private string _networkId;
         private IExternalAuthService _authService;
-        public AppSettingsSection _nearLocalStorage;
+        private AppSettingsSection _nearLocalStorage;
+        public AppSettingsSection NearLocalStorage => _nearLocalStorage;
 
         public WalletAccount(Near near, string appKeyPrefix, IExternalAuthService authService)
         {
@@ -74,14 +75,14 @@ namespace NearClientUnity
             {
                 { "title", title },
                 { "contract_id", contractId },
-                { "success_url", successUrl.AbsolutePath },
-                { "failure_url", failureUrl.AbsolutePath },
-                { "app_url", appUrl.AbsolutePath},
-                { "'public_key'", accessKey.GetPublicKey().ToString() },
+                { "success_url", successUrl.AbsoluteUri },
+                { "failure_url", failureUrl.AbsoluteUri },
+                { "app_url", appUrl.AbsoluteUri},
+                { "public_key", accessKey.GetPublicKey().ToString() },
             }).ReadAsStringAsync().Result;
 
             await _keyStore.SetKeyAsync(_networkId, PendingAccessKeyPrefix + accessKey.GetPublicKey(), accessKey);
-            return _authService.OpenUrl(url.Uri.AbsolutePath);
+            return _authService.OpenUrl(url.Uri.AbsoluteUri);
 
         }
 
