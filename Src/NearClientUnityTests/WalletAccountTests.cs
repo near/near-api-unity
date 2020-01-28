@@ -10,7 +10,7 @@ namespace NearClientUnityTests
     public class WalletAccountTests
     {
 
-        //private WalletAccount _walletAccount;
+        private WalletAccount _walletAccount;
         private KeyStore _keyStore;
         private const string _walletUrl = "http://example.com/wallet";
         private Near _nearFake;
