@@ -1,5 +1,4 @@
-﻿using System;
-using NearClientUnity.Providers;
+﻿using NearClientUnity.Providers;
 using NUnit.Framework;
 
 namespace NearClientUnityTests.Utils
@@ -20,7 +19,6 @@ namespace NearClientUnityTests.Utils
                 Logs = new string[0],
                 ReceiptIds = new string[] { "11112" },
                 GasBurnt = 1
-
             };
             var transaction = new ExecutionOutcomeWithId()
             {
@@ -37,7 +35,6 @@ namespace NearClientUnityTests.Utils
                 Logs = new string[0],
                 ReceiptIds = new string[] { "11112" },
                 GasBurnt = 9001
-
             };
             var secondExcStatus = new ExecutionStatus()
             {
@@ -49,7 +46,6 @@ namespace NearClientUnityTests.Utils
                 Logs = new string[0],
                 ReceiptIds = new string[0],
                 GasBurnt = 0
-
             };
             var receipts = new ExecutionOutcomeWithId[] {
                 new ExecutionOutcomeWithId { Id = "11112", Outcome = firstExcOutcome },
@@ -63,9 +59,8 @@ namespace NearClientUnityTests.Utils
                 },
                 Transaction = transaction,
                 Receipts = receipts
-
             };
-            dynamic lastResult = Provider.GetTransactionLastResult(result);            
+            dynamic lastResult = Provider.GetTransactionLastResult(result);
             Assert.IsFalse(lastResult is null);
         }
 
@@ -82,7 +77,6 @@ namespace NearClientUnityTests.Utils
                 Logs = new string[0],
                 ReceiptIds = new string[] { "11112" },
                 GasBurnt = 1
-
             };
             var transaction = new ExecutionOutcomeWithId()
             {
@@ -99,7 +93,6 @@ namespace NearClientUnityTests.Utils
                 Logs = new string[0],
                 ReceiptIds = new string[] { "11112" },
                 GasBurnt = 9001
-
             };
             var secondExcStatus = new ExecutionStatus()
             {
@@ -111,7 +104,6 @@ namespace NearClientUnityTests.Utils
                 Logs = new string[0],
                 ReceiptIds = new string[0],
                 GasBurnt = 0
-
             };
             var receipts = new ExecutionOutcomeWithId[] {
                 new ExecutionOutcomeWithId { Id = "11112", Outcome = firstExcOutcome },
@@ -125,7 +117,6 @@ namespace NearClientUnityTests.Utils
                 },
                 Transaction = transaction,
                 Receipts = receipts
-
             };
             dynamic lastResult = Provider.GetTransactionLastResult(result);
             Assert.IsTrue(lastResult is null);

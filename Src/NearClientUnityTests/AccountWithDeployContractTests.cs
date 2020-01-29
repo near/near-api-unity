@@ -12,16 +12,27 @@ using System.Text;
 using System.Threading.Tasks;
 
 [assembly: InternalsVisibleTo("NearClientUnity")]
+
 namespace NearClientUnityTests
-{    
+{
     public class TestConsoleWriter : TextWriter
     {
-        private StringBuilder content = new StringBuilder();
         private List<string> _logs;
+        private StringBuilder content = new StringBuilder();
+
         public TestConsoleWriter(List<string> logs)
         {
             _logs = logs;
         }
+
+        public override Encoding Encoding
+        {
+            get
+            {
+                return Encoding.UTF8;
+            }
+        }
+
         public override void Write(char value)
         {
             base.Write(value);
@@ -36,14 +47,6 @@ namespace NearClientUnityTests
                 content = new StringBuilder();
             }
         }
-
-        public override Encoding Encoding
-        {
-            get
-            {
-                return Encoding.UTF8;
-            }
-        }
     }
 
     [TestFixture]
@@ -51,10 +54,43 @@ namespace NearClientUnityTests
     {
         private dynamic _contract;
         private string _contractId;
+        private List<string> _logs;
         private Near _near;
         private Account _workingAccount;
-        List<string> _logs;
         private TextWriter defaultConsoleOut;
+
+        [TearDown]
+        public void AfterEachTest()
+        {
+            Console.SetOut(defaultConsoleOut);
+            defaultConsoleOut = null;
+            _logs = null;
+        }
+
+        [SetUp]
+        public void BeforeEachTest()
+        {
+            defaultConsoleOut = Console.Out;
+            _logs = new List<string>();
+            Console.SetOut(new TestConsoleWriter(_logs));
+        }
+
+        [Test]
+        public void CanGetAssertMessageFromMethodResult()
+        {
+            Assert.That(async () => await _contract.triggerAssert(), Throws.TypeOf<Exception>());
+            Assert.AreEqual($"[{_contractId}]: LOG: log before assert", _logs[0]);
+            Assert.IsTrue(_logs[1].Contains($"[{_contractId}]: ABORT: expected to fail, filename: \"assembly/main.ts\""));
+        }
+
+        [Test]
+        public async Task CanGetLogsFromMethodResult()
+        {
+            string[] expectedResult = new[] { $"[{_contractId}]: LOG: log1", $"[{_contractId}]: LOG: log2" };
+            await _contract.generateLogs();
+            string[] actualResult = _logs.ToArray();
+            Assert.AreEqual(expectedResult, actualResult);
+        }
 
         public void ClassInit()
         {
@@ -83,22 +119,6 @@ namespace NearClientUnityTests
             _contract = new ContractNear(_workingAccount, _contractId, contractOptions);
         }
 
-        [SetUp]
-        public void BeforeEachTest()
-        {
-            defaultConsoleOut = Console.Out;
-            _logs = new List<string>();
-            Console.SetOut(new TestConsoleWriter(_logs));
-        }
-
-        [TearDown]
-        public void AfterEachTest()
-        {
-            Console.SetOut(defaultConsoleOut);           
-            defaultConsoleOut = null;
-            _logs = null;
-        }
-
         [Test]
         public async Task MakeFunctionCallsViaAccount()
         {
@@ -123,7 +143,7 @@ namespace NearClientUnityTests
 
             args = new ExpandoObject();
             args.value = setCallValue;
-            
+
             actualResult = Provider.GetTransactionLastResult(await _workingAccount.FunctionCallAsync(_contractId, "setValue", args));
 
             Assert.AreEqual(expectedResult, actualResult);
@@ -148,8 +168,8 @@ namespace NearClientUnityTests
             var expectedResult = "hello trex";
 
             dynamic args = new ExpandoObject();
-            args.name = "trex";            
-            
+            args.name = "trex";
+
             var rawJsonObject = await _contract.hello(args);
 
             var result = new List<byte>();
@@ -231,23 +251,6 @@ namespace NearClientUnityTests
             actualResult = Encoding.UTF8.GetString(result.ToArray()).Trim('"');
 
             Assert.AreEqual(expectedResult, actualResult);
-        }
-
-        [Test]
-        public async Task CanGetLogsFromMethodResult()
-        {            
-            string[] expectedResult = new[] { $"[{_contractId}]: LOG: log1", $"[{_contractId}]: LOG: log2" };            
-            await _contract.generateLogs();            
-            string[] actualResult = _logs.ToArray();
-            Assert.AreEqual(expectedResult, actualResult);           
-        }
-
-        [Test]
-        public void CanGetAssertMessageFromMethodResult()
-        {
-            Assert.That(async() => await _contract.triggerAssert(), Throws.TypeOf<Exception>());
-            Assert.AreEqual($"[{_contractId}]: LOG: log before assert", _logs[0]);            
-            Assert.IsTrue(_logs[1].Contains($"[{_contractId}]: ABORT: expected to fail, filename: \"assembly/main.ts\""));
         }
 
         [Test]

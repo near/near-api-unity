@@ -14,19 +14,24 @@ namespace NearClientUnity
         private readonly string _contractId;
         private string[] _availableChangeMethods;
         private string[] _availableViewMethods;
-        
+
         public ContractNear(Account account, string contractId, ContractOptions options)
         {
             _account = account;
             _contractId = contractId;
             _availableViewMethods = options.viewMethods as string[];
             _availableChangeMethods = options.changeMethods as string[];
+        }
 
+        public async Task<dynamic> Change(string methodName, dynamic args, ulong? gas = null, Nullable<UInt128> amount = null)
+        {
+            var rawResult = await _account.FunctionCallAsync(_contractId, methodName, args, gas, amount);
+            return Provider.GetTransactionLastResult(rawResult);
         }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out dynamic result)
-        {            
-            if(Array.Exists(_availableChangeMethods, changeMethod => changeMethod == binder.Name))
+        {
+            if (Array.Exists(_availableChangeMethods, changeMethod => changeMethod == binder.Name))
             {
                 if (args.Length == 0)
                 {
@@ -39,7 +44,7 @@ namespace NearClientUnity
                     result = Change(binder.Name, args[0]);
                     return true;
                 }
-                else if(args.Length == 2 && args[0].GetType() == typeof(ExpandoObject) && args[1].GetType() == typeof(ulong))
+                else if (args.Length == 2 && args[0].GetType() == typeof(ExpandoObject) && args[1].GetType() == typeof(ulong))
                 {
                     result = Change(binder.Name, args[0], (ulong)args[1]);
                     return true;
@@ -59,9 +64,8 @@ namespace NearClientUnity
                     result = null;
                     return false;
                 }
-
             }
-            else if(Array.Exists(_availableViewMethods, viewMethod => viewMethod == binder.Name))
+            else if (Array.Exists(_availableViewMethods, viewMethod => viewMethod == binder.Name))
             {
                 if (args.Length == 0)
                 {
@@ -70,7 +74,7 @@ namespace NearClientUnity
                     return true;
                 }
                 if (args.Length == 1 && args[0].GetType() == typeof(ExpandoObject))
-                {                    
+                {
                     result = View(binder.Name, args[0]);
                     return true;
                 }
@@ -79,18 +83,12 @@ namespace NearClientUnity
                     result = null;
                     return false;
                 }
-            }            
+            }
             else
             {
                 result = null;
                 return false;
             }
-        }
-
-        public async Task<dynamic> Change(string methodName, dynamic args, ulong? gas = null, Nullable<UInt128> amount = null)
-        {            
-            var rawResult = await _account.FunctionCallAsync(_contractId, methodName, args, gas, amount);
-            return Provider.GetTransactionLastResult(rawResult);
         }
 
         public async Task<dynamic> View(string methodName, dynamic args)

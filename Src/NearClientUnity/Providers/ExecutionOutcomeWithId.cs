@@ -6,7 +6,7 @@
         public ExecutionOutcome Outcome { get; set; }
 
         public static ExecutionOutcomeWithId FromDynamicJsonObject(dynamic jsonObject)
-        {           
+        {
             var result = new ExecutionOutcomeWithId()
             {
                 Id = jsonObject.id,

@@ -31,9 +31,7 @@ namespace NearClientUnity
 
         public static async Task<Tuple<byte[], SignedTransaction>> SignTransactionAsync(string receiverId, ulong nonce, Action[] actions, ByteArray32 blockHash, Signer signer, string accountId, string networkId)
         {
-            //Console.WriteLine("message0 " + receiverId);
             var publicKey = await signer.GetPublicKeyAsync(accountId, networkId);
-            //Console.WriteLine("publicKey " + publicKey);
             var transaction = new Transaction
             {
                 SignerId = accountId,
@@ -43,7 +41,7 @@ namespace NearClientUnity
                 Actions = actions,
                 BlockHash = blockHash
             };
-            var message = transaction.ToByteArray(); //ToDo:            
+            var message = transaction.ToByteArray();
 
             byte[] hash;
             using (var sha256 = SHA256.Create())
@@ -57,9 +55,8 @@ namespace NearClientUnity
             {
                 Transaction = transaction,
                 Signature = new NearSignature(signature.SignatureBytes)
-            };            
+            };
             var result = new Tuple<byte[], SignedTransaction>(hash, signedTx);
-            //Console.WriteLine("message2 " + result.Item1 + "/" + result.Item2);
             return result;
         }
 
@@ -75,7 +72,7 @@ namespace NearClientUnity
                 Actions = actions,
                 BlockHash = blockHash
             };
-            var message = transaction.ToByteArray(); //ToDo:
+            var message = transaction.ToByteArray();
 
             byte[] hash;
             using (var sha256 = SHA256.Create())
@@ -106,7 +103,7 @@ namespace NearClientUnity
                 Actions = actions,
                 BlockHash = blockHash
             };
-            var message = transaction.ToByteArray(); //ToDo:
+            var message = transaction.ToByteArray();
 
             byte[] hash;
             using (var sha256 = SHA256.Create())

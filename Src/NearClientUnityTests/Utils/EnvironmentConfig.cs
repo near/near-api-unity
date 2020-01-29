@@ -1,12 +1,23 @@
 ﻿using System;
+
 namespace NearClientUnityTests.Utils
 {
+    public enum Environment
+    {
+        Production,
+        Development,
+        Local,
+        Test,
+        TestRemote,
+        CI,
+        CIStaging
+    }
+
     public class EnvironmentConfig
     {
-
+        public string MasterAccount;
         public string NetworkId;
         public Uri NodeUrl;
-        public string MasterAccount;
 
         public EnvironmentConfig(string networkId, Uri nodeUrl, string masterAccount)
         {
@@ -47,16 +58,5 @@ namespace NearClientUnityTests.Utils
                     }
             }
         }
-    }
-
-    public enum Environment
-    {
-        Production,
-        Development,
-        Local,
-        Test,
-        TestRemote,
-        CI,
-        CIStaging        
     }
 }

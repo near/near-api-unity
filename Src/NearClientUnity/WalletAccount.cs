@@ -13,18 +13,17 @@ namespace NearClientUnity
 {
     public class WalletAccount
     {
-        private const string LoginWalletUrlSuffix = "/login/";
         private const string LocalStorageKeySuffix = "_wallet_auth_key";
+        private const string LoginWalletUrlSuffix = "/login/";
         private const string PendingAccessKeyPrefix = "pending_key";
 
-        private string _walletBaseUrl;
-        private string _authDataKey;
-        private KeyStore _keyStore;
         private dynamic _authData = new ExpandoObject();
-        private string _networkId;
+        private string _authDataKey;
         private IExternalAuthService _authService;
+        private KeyStore _keyStore;
         private AppSettingsSection _nearLocalStorage;
-        public AppSettingsSection NearLocalStorage => _nearLocalStorage;
+        private string _networkId;
+        private string _walletBaseUrl;
 
         public WalletAccount(Near near, string appKeyPrefix, IExternalAuthService authService)
         {
@@ -41,14 +40,39 @@ namespace NearClientUnity
             map.ExeConfigFilename = Assembly.GetExecutingAssembly().Location + ".config";
             Configuration libConfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
             _nearLocalStorage = (libConfig.GetSection("appSettings") as AppSettingsSection);
-            if(_nearLocalStorage.Settings.Count > 0)
+            if (_nearLocalStorage.Settings.Count > 0)
             {
                 _authData.AccountId = _nearLocalStorage.Settings[_authDataKey].Value ?? null;
             }
             else
             {
                 _authData.AccountId = null;
-            }                        
+            }
+        }
+
+        public AppSettingsSection NearLocalStorage => _nearLocalStorage;
+
+        public async Task CompleteSignIn(string url)
+        {
+            Uri uri = new Uri(url);
+            string publicKey = HttpUtility.ParseQueryString(uri.Query).Get("public_key");
+            string accountId = HttpUtility.ParseQueryString(uri.Query).Get("account_id");
+            _authData.AccountId = accountId;
+
+            try
+            {
+                _nearLocalStorage.Settings.Add(_authDataKey, accountId);
+                await MoveKeyFromTempToPermanent(accountId, publicKey);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
+        }
+
+        public string GetAccountId()
+        {
+            return _authData.AccountId ?? "";
         }
 
         public bool IsSignedIn()
@@ -57,12 +81,7 @@ namespace NearClientUnity
             return true;
         }
 
-        public string GetAccountId()
-        {
-            return _authData.AccountId ?? "";
-        }
-
-        public async Task<bool> RequestSignIn(string contractId, string title,Uri successUrl, Uri failureUrl, Uri appUrl)
+        public async Task<bool> RequestSignIn(string contractId, string title, Uri successUrl, Uri failureUrl, Uri appUrl)
         {
             if (!string.IsNullOrWhiteSpace(GetAccountId())) return true;
             if (await _keyStore.GetKeyAsync(_networkId, GetAccountId()) != null) return true;
@@ -83,25 +102,12 @@ namespace NearClientUnity
 
             await _keyStore.SetKeyAsync(_networkId, PendingAccessKeyPrefix + accessKey.GetPublicKey(), accessKey);
             return _authService.OpenUrl(url.Uri.AbsoluteUri);
-
         }
 
-        public async Task CompleteSignIn(string url)
+        public void SignOut()
         {
-            Uri uri = new Uri(url);
-            string publicKey = HttpUtility.ParseQueryString(uri.Query).Get("public_key");
-            string accountId = HttpUtility.ParseQueryString(uri.Query).Get("account_id");
-            _authData.AccountId = accountId;
-            
-            try
-            {
-                _nearLocalStorage.Settings.Add(_authDataKey, accountId);
-                await MoveKeyFromTempToPermanent(accountId, publicKey);               
-            }
-            catch(Exception e)
-            {
-                throw e;
-            }
+            _authData = new ExpandoObject();
+            _nearLocalStorage.Settings.Remove(_authDataKey);
         }
 
         private async Task MoveKeyFromTempToPermanent(string accountId, string publicKey)
@@ -112,7 +118,7 @@ namespace NearClientUnity
             {
                 keyPair = await _keyStore.GetKeyAsync(_networkId, pendingAccountId);
             }
-            catch(Exception)
+            catch (Exception)
             {
                 throw new Exception("Wallet account error: no KeyPair");
             }
@@ -121,7 +127,7 @@ namespace NearClientUnity
             {
                 await _keyStore.SetKeyAsync(_networkId, accountId, keyPair);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
@@ -130,16 +136,10 @@ namespace NearClientUnity
             {
                 await _keyStore.RemoveKeyAsync(_networkId, PendingAccessKeyPrefix + publicKey);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 throw e;
             }
-        }
-
-        public void SignOut()
-        {
-            _authData = new ExpandoObject();
-            _nearLocalStorage.Settings.Remove(_authDataKey);
         }
     }
 }

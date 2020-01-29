@@ -12,13 +12,13 @@
             {
                 return new FinalExecutionStatus()
                 {
-                    Failure = ExecutionError.FromDynamicJsonObject(jsonObject.Failure),                    
+                    Failure = ExecutionError.FromDynamicJsonObject(jsonObject.Failure),
                 };
             }
             return new FinalExecutionStatus()
-            {                
+            {
                 SuccessValue = jsonObject.SuccessValue
-            };           
+            };
         }
     }
 }

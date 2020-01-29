@@ -48,14 +48,11 @@ namespace NearClientUnity
     {
         public InMemorySignerException()
         {
-
         }
 
         public InMemorySignerException(string name)
             : base(name)
         {
-
         }
-
     }
 }

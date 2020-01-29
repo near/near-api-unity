@@ -15,11 +15,11 @@ namespace NearClientUnity
         public Near(NearConfig config)
         {
             _config = config;
-            
+
             dynamic providerArgs = new ExpandoObject();
             providerArgs.Url = config.NodeUrl;
             dynamic signerArgs = new ExpandoObject();
-            signerArgs.KeyStore = config.KeyStore;           
+            signerArgs.KeyStore = config.KeyStore;
             var connectionConfig = new ConnectionConfig()
             {
                 NetworkId = config.NetworkId,
@@ -81,8 +81,8 @@ namespace NearClientUnity
                 }
             }
             catch (Exception error)
-            {                
-                Console.WriteLine($"Failed to load master account key from {config.KeyPath}: {error}");                
+            {
+                Console.WriteLine($"Failed to load master account key from {config.KeyPath}: {error}");
             }
 
             return new Near(config);

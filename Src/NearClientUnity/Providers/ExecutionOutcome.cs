@@ -27,7 +27,7 @@ namespace NearClientUnity.Providers
                 GasBurnt = jsonObject.gas_burnt,
                 Logs = logs.ToArray(),
                 ReceiptIds = receiptIds.ToArray(),
-                Status = ExecutionStatus.FromDynamicJsonObject(jsonObject.status),                
+                Status = ExecutionStatus.FromDynamicJsonObject(jsonObject.status),
             };
             return result;
         }

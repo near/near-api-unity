@@ -87,7 +87,6 @@ namespace NearClientUnity.Utilities
             var currentPosition = 0;
 
             var stringLength = (int)ReadUInt();
-            //Console.WriteLine("stringLength " + stringLength);
 
             if (stringLength == 0)
             {

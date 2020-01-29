@@ -1,6 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
-using System.ComponentModel;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -23,32 +22,29 @@ namespace NearClientUnity.Utilities
                 {
                     HttpContent content = new StringContent(json, Encoding.UTF8, "application/json");
                     content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
-                    //Console.WriteLine(url + " -> " + json);
                     response = client.PostAsync(url, content).Result;
                 }
                 else
                 {
-                    //Console.WriteLine(url);
                     response = await client.GetAsync(url);
-                }                                
-              
+                }
+
                 if (response.IsSuccessStatusCode)
-                {                    
+                {
                     string jsonString = await response.Content.ReadAsStringAsync();
-                    //Console.WriteLine("jsonString -> " + jsonString);
 
                     dynamic rawResult = JObject.Parse(jsonString);
 
-                    if(rawResult.error != null && rawResult.error.data != null)
+                    if (rawResult.error != null && rawResult.error.data != null)
                     {
                         throw new Exception($"[{rawResult.error.code}]: {rawResult.error.data.error_type}: {rawResult.error.data.error_message}");
                     }
-                    
+
                     return rawResult.result;
                 }
                 else
-                {                    
-                    throw new HttpException((int) response.StatusCode, response.Content.ToString());
+                {
+                    throw new HttpException((int)response.StatusCode, response.Content.ToString());
                 }
             }
         }
