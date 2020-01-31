@@ -7,7 +7,7 @@ namespace NearClientUnity
     public class NearSignature
     {
         private ByteArray64 _data;
-        private KeyType _keyType;
+        private readonly KeyType _keyType;
 
         public NearSignature(byte[] signature)
         {

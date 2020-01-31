@@ -17,7 +17,7 @@ namespace NearClientUnityTests
 {
     public class TestConsoleWriter : TextWriter
     {
-        private List<string> _logs;
+        private readonly List<string> _logs;
         private StringBuilder content = new StringBuilder();
 
         public TestConsoleWriter(List<string> logs)

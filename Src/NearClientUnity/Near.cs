@@ -8,9 +8,9 @@ namespace NearClientUnity
 {
     public class Near
     {
-        private AccountCreator _accountCreator;
-        private NearConfig _config;
-        private Connection _connection;
+        private readonly AccountCreator _accountCreator;
+        private readonly NearConfig _config;
+        private readonly Connection _connection;
 
         public Near(NearConfig config)
         {

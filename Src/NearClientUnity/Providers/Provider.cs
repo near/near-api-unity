@@ -20,7 +20,7 @@ namespace NearClientUnity.Providers
                 var result = JObject.Parse(value);
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
                 return value;
             }

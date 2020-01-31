@@ -8,8 +8,8 @@ namespace NearClientUnity
 {
     public class Action
     {
-        private dynamic _args;
-        private ActionType _type;
+        private readonly dynamic _args;
+        private readonly ActionType _type;
 
         public Action(ActionType type, dynamic args)
         {

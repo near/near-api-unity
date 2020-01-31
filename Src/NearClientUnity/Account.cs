@@ -155,8 +155,8 @@ namespace NearClientUnity
                 }
                 _state = new AccountState()
                 {
-                    AccountId = rawState.account_id == null ? null : rawState.account_id,
-                    Staked = rawState.staked == null ? null : rawState.staked,
+                    AccountId = rawState.account_id ?? null,
+                    Staked = rawState.staked ?? null,
                     Locked = rawState.locked,
                     Amount = rawState.amount,
                     CodeHash = rawState.code_hash,
@@ -311,7 +311,7 @@ namespace NearClientUnity
                     var result = await _connection.Provider.GetTxStatusAsync(txHash, accountId);
                     return result;
                 }
-                catch (Exception)
+                catch
                 {
                     await Task.Delay(waitTime);
                     waitTime *= TxStatusRetryWait;

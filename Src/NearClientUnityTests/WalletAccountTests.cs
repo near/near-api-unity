@@ -11,7 +11,7 @@ namespace NearClientUnityTests
 {
     public class MockAuthService : IExternalAuthService
     {
-        private List<string> _urls = new List<string>();
+        private readonly List<string> _urls = new List<string>();
         public List<string> Urls => _urls;
 
         public bool OpenUrl(string url)
@@ -25,8 +25,7 @@ namespace NearClientUnityTests
     public class WalletAccountTests
     {
         private const string _walletUrl = "http://example.com/wallet";
-        private MockAuthService _authService;
-        private string _contractName2;
+        private MockAuthService _authService;        
         private KeyStore _keyStore;
         private Near _nearFake;
         private WalletAccount _walletAccount;

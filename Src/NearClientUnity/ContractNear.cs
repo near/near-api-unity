@@ -12,8 +12,8 @@ namespace NearClientUnity
     {
         private readonly Account _account;
         private readonly string _contractId;
-        private string[] _availableChangeMethods;
-        private string[] _availableViewMethods;
+        private readonly string[] _availableChangeMethods;
+        private readonly string[] _availableViewMethods;
 
         public ContractNear(Account account, string contractId, ContractOptions options)
         {

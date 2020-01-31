@@ -9,7 +9,7 @@ namespace NearClientUnity.Providers
 {
     public class JsonRpcProvider : Provider
     {
-        private ConnectionInfo _connection;
+        private readonly ConnectionInfo _connection;
 
         public JsonRpcProvider(string url)
         {

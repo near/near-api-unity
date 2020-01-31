@@ -11,12 +11,11 @@ namespace NearClientUnity.Utilities
         protected Stream OutStream;
         private const int LargeByteBufferSize = 256;
         private byte[] _buffer;
-        private Encoder _encoder;
-        private Encoding _encoding;
+        private readonly Encoder _encoder;
+        private readonly Encoding _encoding;
         private byte[] _largeByteBuffer;
-        private bool _leaveOpen;
-        private int _maxChars;
-        private char[] _tmpOneCharBuffer;
+        private readonly bool _leaveOpen;
+        private int _maxChars;        
 
         public NearBinaryWriter(Stream output) : this(output, new UTF8Encoding(false, true))
         {
@@ -26,14 +25,12 @@ namespace NearClientUnity.Utilities
         {
             if (output == null)
                 throw new ArgumentNullException(nameof(output));
-            if (encoding == null)
-                throw new ArgumentNullException(nameof(encoding));
             if (!output.CanWrite)
                 throw new ArgumentException("Argument_StreamNotWritable");
 
             OutStream = output;
             _buffer = new byte[16];
-            _encoding = encoding;
+            _encoding = encoding ?? throw new ArgumentNullException(nameof(encoding));
             _encoder = _encoding.GetEncoder();
             _leaveOpen = leaveOpen;
         }

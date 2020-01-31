@@ -3,7 +3,7 @@ using System.Reflection;
 
 namespace NearClientUnityTests.Utils
 {
-    public class Wasm
+    public static class Wasm
     {
         public static byte[] GetBytes()
         {
