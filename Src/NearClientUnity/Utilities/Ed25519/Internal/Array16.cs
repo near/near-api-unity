@@ -1,27 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Chaos.NaCl.Internal
+﻿namespace NearClientUnity.Utilities.Ed25519.Internal
 {
-    // Array16<UInt32> Salsa20 state
-    // Array16<UInt64> SHA-512 block
+    // Array16<UInt32> Salsa20 state Array16<UInt64> SHA-512 block
     internal struct Array16<T>
     {
-        public T x0;
-        public T x1;
-        public T x2;
-        public T x3;
-        public T x4;
-        public T x5;
-        public T x6;
-        public T x7;
-        public T x8;
-        public T x9;
-        public T x10;
-        public T x11;
-        public T x12;
-        public T x13;
-        public T x14;
-        public T x15;
+        public T X0;
+        public T X1;
+        public T X10;
+        public T X11;
+        public T X12;
+        public T X13;
+        public T X14;
+        public T X15;
+        public T X2;
+        public T X3;
+        public T X4;
+        public T X5;
+        public T X6;
+        public T X7;
+        public T X8;
+        public T X9;
     }
 }
