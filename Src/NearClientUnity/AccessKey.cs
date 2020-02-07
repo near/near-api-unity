@@ -18,7 +18,7 @@ namespace NearClientUnity
 
         public static AccessKey FromDynamicJsonObject(dynamic jsonObject)
         {
-            if (jsonObject.permission.Value.GetType().Name == "String" && jsonObject.permission.Value == "FullAccess")
+            if (jsonObject.GetType().Name == "JValue" && jsonObject.permission.Value.GetType().Name == "String" && jsonObject.permission.Value == "FullAccess")
             {
                 return new AccessKey
                 {
@@ -30,7 +30,24 @@ namespace NearClientUnity
                     }
                 };
             }
-            return FullAccessKey();
+            else
+            {
+                var rawAllowance = jsonObject.permission.FunctionCall.allowance ?? null;
+                return new AccessKey
+                {
+                    Nonce = jsonObject.nonce,
+                    Permission = new AccessKeyPermission
+                    {
+                        PermissionType = AccessKeyPermissionType.FunctionCallPermission,
+                        FunctionCall = new FunctionCallPermission()
+                        {
+                            Allowance = rawAllowance == null ? UInt128.Parse(rawAllowance) : null,
+                            MethodNames = jsonObject.permission.FunctionCall.method_names.ToObject<string[]>(),
+                            ReceiverId = jsonObject.permission.FunctionCall.receiver_id,
+                        }
+                    }
+                };
+            }
         }
 
         public static AccessKey FromStream(MemoryStream stream)

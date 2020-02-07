@@ -150,7 +150,7 @@ namespace NearClientUnity
             {
                 var rawState = await _connection.Provider.QueryAsync($"account/{_accountId}", "");
                 if (rawState == null)
-                {
+                {                    
                     return;
                 }
                 _state = new AccountState()

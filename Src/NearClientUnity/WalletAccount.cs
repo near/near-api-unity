@@ -8,6 +8,7 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
+using System.Web.Util;
 
 namespace NearClientUnity
 {
@@ -20,12 +21,12 @@ namespace NearClientUnity
         private dynamic _authData = new ExpandoObject();
         private string _authDataKey;
         private IExternalAuthService _authService;
-        private KeyStore _keyStore;
-        private AppSettingsSection _nearLocalStorage;
+        private IExternalAuthStorage _authStorage;
+        private KeyStore _keyStore;        
         private string _networkId;
         private string _walletBaseUrl;
 
-        public WalletAccount(Near near, string appKeyPrefix, IExternalAuthService authService)
+        public WalletAccount(Near near, string appKeyPrefix, IExternalAuthService authService, IExternalAuthStorage authStorage)
         {
             _networkId = near.Config.NetworkId;
             _walletBaseUrl = near.Config.WalletUrl;
@@ -35,14 +36,12 @@ namespace NearClientUnity
             _authDataKey = $"{appKeyPrefix}{LocalStorageKeySuffix}";
             _keyStore = (near.Connection.Signer as InMemorySigner).KeyStore;
             _authService = authService;
+            _authStorage = authStorage;
 
-            ExeConfigurationFileMap map = new ExeConfigurationFileMap();
-            map.ExeConfigFilename = Assembly.GetExecutingAssembly().Location + ".config";
-            Configuration libConfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
-            _nearLocalStorage = (libConfig.GetSection("appSettings") as AppSettingsSection);
-            if (_nearLocalStorage.Settings.Count > 0)
+           
+            if (_authStorage.HasKey(_authDataKey))
             {
-                _authData.AccountId = _nearLocalStorage.Settings[_authDataKey].Value ?? null;
+                _authData.AccountId = _authStorage.GetValue(_authDataKey);
             }
             else
             {
@@ -50,10 +49,11 @@ namespace NearClientUnity
             }
         }
 
-        public AppSettingsSection NearLocalStorage => _nearLocalStorage;
+        public IExternalAuthStorage NearAuthStorage => _authStorage;
 
         public async Task CompleteSignIn(string url)
         {
+            HttpEncoder.Current = HttpEncoder.Default;
             Uri uri = new Uri(url);
             string publicKey = HttpUtility.ParseQueryString(uri.Query).Get("public_key");
             string accountId = HttpUtility.ParseQueryString(uri.Query).Get("account_id");
@@ -61,7 +61,7 @@ namespace NearClientUnity
 
             try
             {
-                _nearLocalStorage.Settings.Add(_authDataKey, accountId);
+                _authStorage.Add(_authDataKey, accountId);                
                 await MoveKeyFromTempToPermanent(accountId, publicKey);
             }
             catch (Exception e)
@@ -107,7 +107,8 @@ namespace NearClientUnity
         public void SignOut()
         {
             _authData = new ExpandoObject();
-            _nearLocalStorage.Settings.Remove(_authDataKey);
+            _authData.AccountId = null;
+            _authStorage.DeleteKey(_authDataKey);
         }
 
         private async Task MoveKeyFromTempToPermanent(string accountId, string publicKey)
