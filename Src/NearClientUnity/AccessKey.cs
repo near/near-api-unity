@@ -18,7 +18,8 @@ namespace NearClientUnity
 
         public static AccessKey FromDynamicJsonObject(dynamic jsonObject)
         {
-            if (jsonObject.GetType().Name == "JValue" && jsonObject.permission.Value.GetType().Name == "String" && jsonObject.permission.Value == "FullAccess")
+            
+            if (jsonObject.permission.GetType().Name == "JValue" && jsonObject.permission.Value.GetType().Name == "String" && jsonObject.permission.Value == "FullAccess")
             {
                 return new AccessKey
                 {

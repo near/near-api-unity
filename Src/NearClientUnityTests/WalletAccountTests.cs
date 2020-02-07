@@ -21,11 +21,41 @@ namespace NearClientUnityTests
         }
     }
 
+    public class MockAuthStorage : IExternalAuthStorage
+    {
+        private Dictionary<string, string> _storage = new Dictionary<string, string>();
+        public void Add(string key, string value)
+        {
+            _storage.Add(key, value);
+        }
+
+        public void DeleteKey(string key)
+        {
+            _storage.Remove(key);
+        }
+
+        public string GetValue(string key)
+        {
+            return _storage[key];
+        }
+
+        public bool HasKey(string key)
+        {
+            return _storage.ContainsKey(key);
+        }
+
+        public void Clear()
+        {
+            _storage.Clear();
+        }
+    }
+
     [TestFixture]
     public class WalletAccountTests
     {
         private const string _walletUrl = "http://example.com/wallet";
-        private MockAuthService _authService;        
+        private MockAuthService _authService;
+        private MockAuthStorage _authStorage;
         private KeyStore _keyStore;
         private Near _nearFake;
         private WalletAccount _walletAccount;
@@ -79,7 +109,7 @@ namespace NearClientUnityTests
         [TearDown]
         public void SetupAfterEachTestAsync()
         {
-            _walletAccount.NearLocalStorage.Settings.Clear();
+            _authStorage.Clear();
         }
 
         public void SetupBeforeEachTest()
@@ -102,7 +132,8 @@ namespace NearClientUnityTests
                 WalletUrl = _walletUrl
             });
             _authService = new MockAuthService();
-            _walletAccount = new WalletAccount(_nearFake, "", _authService);
+            _authStorage = new MockAuthStorage();
+            _walletAccount = new WalletAccount(_nearFake, "", _authService, _authStorage);
         }
     }
 }
