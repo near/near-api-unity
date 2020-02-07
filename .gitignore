@@ -25,3 +25,11 @@ Src/.idea/
 *.nuget.targets
 project.lock.json
 project.assets.json
+# =============== #
+# Unity generated #
+# =============== #
+Temp/
+Obj/
+UnityGenerated/
+Library/
+Assets/AssetStoreTools*
